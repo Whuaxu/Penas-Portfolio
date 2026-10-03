@@ -1,0 +1,45 @@
+---
+import { toLang, useTranslations } from '../i18n/utils';
+
+const t = useTranslations(toLang(Astro.currentLocale));
+
+const pads = [
+	{ id: 'about', label: t('nav.about') },
+	{ id: 'experience', label: t('nav.experience') },
+	{ id: 'projects', label: t('nav.projects') },
+	{ id: 'dj', label: t('nav.dj') },
+	{ id: 'contact', label: t('nav.contact') },
+];
+---
+
+<nav aria-label={t('hero.sections')}>
+	<ul class="grid grid-cols-3 gap-2 sm:grid-cols-5">
+		{
+			pads.map(({ id, label }, i) => (
+				<li>
+					<a
+						href={`#${id}`}
+						data-cue={i + 1}
+						class="flex flex-col gap-3 rounded-md border border-fg px-3 py-2.5 font-mono uppercase transition-colors hover:bg-fg hover:text-bg focus-visible:bg-fg focus-visible:text-bg"
+					>
+						<span class="text-[10px] opacity-50">0{i + 1}</span>
+						<span class="text-[11px] leading-tight font-semibold font-stretch-75%">{label}</span>
+					</a>
+				</li>
+			))
+		}
+	</ul>
+	<p class="mt-3 hidden font-mono text-[10px] text-muted uppercase sm:block">{t('hero.padsHint')}</p>
+</nav>
+
+<script>
+	// Number keys 1-5 jump to the matching section
+	document.addEventListener('keydown', (event) => {
+		if (event.metaKey || event.ctrlKey || event.altKey) return;
+		const target = event.target as HTMLElement;
+		if (target.closest('input, textarea, [contenteditable]')) return;
+
+		const pad = document.querySelector<HTMLAnchorElement>(`[data-cue="${event.key}"]`);
+		pad?.click();
+	});
+</script>

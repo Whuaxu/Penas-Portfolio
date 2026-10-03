@@ -1,13 +1,12 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import LanguageSwitcher from '../components/LanguageSwitcher.astro';
+import Hero from '../components/Hero.astro';
+import NowPlaying from '../components/NowPlaying.astro';
 ---
 
 <Layout>
-	<header class="fixed top-4 right-4 z-20">
-		<LanguageSwitcher />
-	</header>
-	<main class="grid min-h-dvh place-items-center px-4">
-		<h1 class="font-serif text-6xl italic md:text-8xl">Javi Pena</h1>
+	<NowPlaying />
+	<main>
+		<Hero />
 	</main>
 </Layout>

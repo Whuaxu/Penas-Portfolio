@@ -1,0 +1,225 @@
+---
+import { toLang, useTranslations } from '../i18n/utils';
+
+interface Props {
+	class?: string;
+}
+
+const { class: className } = Astro.props;
+const t = useTranslations(toLang(Astro.currentLocale));
+const grooves = [46, 43, 40, 37, 34, 31, 28, 25];
+---
+
+<div data-deck class:list={['relative', className]}>
+	<div data-deck-platter class="relative aspect-square" role="img" aria-label={t('deck.vinyl')}>
+		<svg data-deck-disc viewBox="0 0 100 100" class="size-full will-change-transform">
+			<circle cx="50" cy="50" r="49" fill="#0a0a0a" />
+			{grooves.map((r) => <circle cx="50" cy="50" r={r} fill="none" stroke="#ffffff" stroke-opacity="0.08" stroke-width="0.4" />)}
+			<circle cx="50" cy="3.5" r="0.9" fill="#ffffff" fill-opacity="0.7" />
+			<circle cx="50" cy="50" r="17" fill="var(--color-cue-e)" />
+			<path id="deck-label-path" d="M50 38 a12 12 0 1 1 -0.01 0" fill="none" />
+			<text font-family="var(--font-mono)" font-size="3.2" font-weight="600" fill="#0a0a0a" letter-spacing="0.6">
+				<textPath href="#deck-label-path">JAVI PENA · SIDE A · 33⅓ ·</textPath>
+			</text>
+			<circle cx="50" cy="50" r="1.6" fill="#ffffff" />
+		</svg>
+
+		<!-- Tonearm -->
+		<svg viewBox="0 0 100 100" class="pointer-events-none absolute inset-0 size-full" aria-hidden="true">
+			<circle cx="94" cy="8" r="4" fill="#d4d4d4" stroke="#0a0a0a" stroke-width="0.6" />
+			<path d="M94 8 L88 52 L76 64" fill="none" stroke="#d4d4d4" stroke-width="2" stroke-linecap="round" />
+			<rect x="71" y="61" width="8" height="5" rx="1" transform="rotate(-45 75 63.5)" fill="#0a0a0a" />
+		</svg>
+	</div>
+
+	<!-- CUE and PLAY/PAUSE, Pioneer XDJ-RX3 style -->
+	<div class="mt-6 flex justify-end gap-4">
+		<button type="button" data-deck-cue class="deck-btn" style="--led: var(--color-cue-b)" aria-label={t('deck.cue')}>
+			<span class="font-mono text-[10px] font-semibold tracking-wider">CUE</span>
+		</button>
+		<button
+			type="button"
+			data-deck-play
+			class="deck-btn"
+			style="--led: var(--color-cue-c)"
+			aria-label={t('deck.playPause')}
+			aria-pressed="true"
+		>
+			<svg viewBox="0 0 24 12" class="h-2.5" fill="currentColor" aria-hidden="true">
+				<path d="M1 1 L9 6 L1 11 Z" />
+				<path d="M11.5 11 L14.5 1" stroke="currentColor" stroke-width="1.2" />
+				<rect x="17" y="1" width="2.4" height="10" />
+				<rect x="21" y="1" width="2.4" height="10" />
+			</svg>
+		</button>
+	</div>
+</div>
+
+<style>
+	.deck-btn {
+		display: grid;
+		place-items: center;
+		width: 3.5rem;
+		height: 3.5rem;
+		border-radius: 9999px;
+		color: #f5f5f5;
+		background: radial-gradient(circle at 50% 35%, #2a2a2a, #0a0a0a 70%);
+		/* LED ring: dim by default */
+		box-shadow:
+			0 0 0 3px color-mix(in srgb, var(--led) 25%, #111),
+			0 0 0 5px #0a0a0a,
+			0 6px 14px -4px rgb(0 0 0 / 0.5),
+			inset 0 1px 0 rgb(255 255 255 / 0.08);
+		transition:
+			transform 80ms,
+			box-shadow 120ms;
+		cursor: pointer;
+	}
+
+	.deck-btn:active {
+		transform: scale(0.94);
+	}
+
+	.deck-btn:focus-visible {
+		outline: 2px solid var(--color-fg);
+		outline-offset: 6px;
+	}
+
+	.deck-btn[data-led='on'],
+	.deck-btn[data-led='blink'] {
+		box-shadow:
+			0 0 0 3px var(--led),
+			0 0 0 5px #0a0a0a,
+			0 0 18px 2px color-mix(in srgb, var(--led) 70%, transparent),
+			inset 0 1px 0 rgb(255 255 255 / 0.08);
+	}
+
+	.deck-btn[data-led='blink'] {
+		animation: led-blink 0.5s steps(2, start) infinite;
+	}
+
+	@keyframes led-blink {
+		50% {
+			box-shadow:
+				0 0 0 3px color-mix(in srgb, var(--led) 25%, #111),
+				0 0 0 5px #0a0a0a,
+				0 6px 14px -4px rgb(0 0 0 / 0.5),
+				inset 0 1px 0 rgb(255 255 255 / 0.08);
+		}
+	}
+</style>
+
+<script>
+	// Turntable-like deck: the angle accumulates and speed eases toward a target,
+	// so play, pause (vinyl brake) and hover speed-ups never jump.
+	const PLAY_SPEED = 60; // deg/s
+	const HOVER_SPEED = 300;
+	const START_EASING = 3;
+	const BRAKE_SECONDS = 2; // vinyl brake: time to a full stop, whatever the speed
+
+	const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+	document.querySelectorAll<HTMLElement>('[data-deck]').forEach((deck) => {
+		const platter = deck.querySelector<HTMLElement>('[data-deck-platter]')!;
+		const disc = deck.querySelector<SVGElement>('[data-deck-disc]')!;
+		const cueBtn = deck.querySelector<HTMLButtonElement>('[data-deck-cue]')!;
+		const playBtn = deck.querySelector<HTMLButtonElement>('[data-deck-play]')!;
+
+		let playing = !reduceMotion;
+		let previewing = false; // CUE held while paused on the cue point
+		let hovering = false;
+		let cueAngle = 0;
+		let angle = 0;
+		let speed = playing ? PLAY_SPEED : 0;
+		let brakeDecel = 0; // deg/s², fixed when the brake starts
+		let last = 0;
+		let frame = 0;
+
+		const atCue = () => !playing && !previewing && angle === cueAngle;
+		const running = () => playing || previewing;
+
+		const render = () => {
+			playBtn.dataset.led = playing ? 'on' : 'blink';
+			playBtn.setAttribute('aria-pressed', String(playing));
+			cueBtn.dataset.led = previewing || atCue() ? 'on' : playing ? 'off' : 'blink';
+			// Lets the rest of the page (now playing bar) react to the deck
+			document.documentElement.dataset.deck = running() ? 'playing' : 'paused';
+		};
+
+		const tick = (now: number) => {
+			const dt = last ? Math.min((now - last) / 1000, 0.1) : 0;
+			last = now;
+			if (running()) {
+				const target = hovering && playing ? HOVER_SPEED : PLAY_SPEED;
+				speed += (target - speed) * Math.min(1, dt * START_EASING);
+			} else {
+				// Constant deceleration, like a real platter slowing down
+				speed = Math.max(0, speed - brakeDecel * dt);
+			}
+			angle = (angle + speed * dt) % 360;
+			disc.style.transform = `rotate(${angle}deg)`;
+			frame = requestAnimationFrame(tick);
+		};
+
+		const jumpToCue = () => {
+			angle = cueAngle;
+			speed = 0;
+			disc.style.transform = `rotate(${angle}deg)`;
+		};
+
+		playBtn.addEventListener('click', () => {
+			playing = !playing;
+			if (!playing) brakeDecel = speed / BRAKE_SECONDS;
+			render();
+		});
+
+		cueBtn.addEventListener('pointerdown', (event) => {
+			if (event.button !== 0) return;
+			if (playing) {
+				// Back to the cue point and pause
+				playing = false;
+				jumpToCue();
+			} else if (angle !== cueAngle) {
+				// Paused elsewhere: set a new cue point here
+				cueAngle = angle;
+			} else {
+				// Paused on the cue point: play while held
+				previewing = true;
+				speed = PLAY_SPEED;
+				cueBtn.setPointerCapture(event.pointerId);
+			}
+			render();
+		});
+
+		const endPreview = () => {
+			if (!previewing) return;
+			previewing = false;
+			jumpToCue();
+			render();
+		};
+		cueBtn.addEventListener('pointerup', endPreview);
+		cueBtn.addEventListener('pointercancel', endPreview);
+
+		// Keyboard: Enter/Space on CUE behaves like a click (no hold preview)
+		cueBtn.addEventListener('keydown', (event) => {
+			if (event.key !== 'Enter' && event.key !== ' ') return;
+			event.preventDefault();
+			cueBtn.dispatchEvent(new PointerEvent('pointerdown', { button: 0 }));
+			endPreview();
+		});
+
+		platter.addEventListener('pointerenter', () => (hovering = true));
+		platter.addEventListener('pointerleave', () => (hovering = false));
+
+		// Only animate while visible
+		new IntersectionObserver(([entry]) => {
+			cancelAnimationFrame(frame);
+			if (entry.isIntersecting) {
+				last = 0;
+				frame = requestAnimationFrame(tick);
+			}
+		}).observe(deck);
+
+		render();
+	});
+</script>

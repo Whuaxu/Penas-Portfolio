@@ -3,12 +3,29 @@
 @theme {
   --color-bg: #ffffff;
   --color-fg: #0a0a0a;
-  --color-muted: #737373;
-  --color-line: rgb(10 10 10 / 0.1);
-  --color-accent: #7c5cff;
+  --color-muted: #6b6b6b;
+  --color-line: rgb(10 10 10 / 0.12);
+
+  /* Deck LED and accent colors */
+  --color-cue-a: #ff3b30;
+  --color-cue-b: #ff9500;
+  --color-cue-c: #2fd158;
+  --color-cue-e: #b45cff;
 
   --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
-  --font-serif: "Instrument Serif", ui-serif, Georgia, serif;
+  --font-mono: "Martian Mono Variable", ui-monospace, monospace;
+
+  --animate-eq: eq 0.9s ease-in-out infinite alternate;
+  --animate-blink: blink 1.2s steps(2, start) infinite;
+
+  @keyframes eq {
+    from { transform: scaleY(0.25); }
+    to { transform: scaleY(1); }
+  }
+
+  @keyframes blink {
+    to { visibility: hidden; }
+  }
 }
 
 @layer base {
@@ -18,10 +35,30 @@
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
+    scroll-behavior: smooth;
   }
 
   ::selection {
-    background-color: var(--color-accent);
+    background-color: var(--color-fg);
     color: var(--color-bg);
+  }
+
+  /* Deck paused: freeze the now playing bar */
+  html[data-deck='paused'] .animate-eq,
+  html[data-deck='paused'] .animate-blink {
+    animation-play-state: paused;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation: none !important;
+      transition: none !important;
+    }
   }
 }

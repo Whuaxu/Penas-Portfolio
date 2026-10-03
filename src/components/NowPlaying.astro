@@ -1,0 +1,35 @@
+---
+import LanguageSwitcher from './LanguageSwitcher.astro';
+import { toLang, useTranslations } from '../i18n/utils';
+
+const t = useTranslations(toLang(Astro.currentLocale));
+const bars = [0, 0.15, 0.3, 0.1, 0.25];
+---
+
+<header class="fixed inset-x-0 top-0 z-20 border-b border-line bg-bg/75 backdrop-blur-md">
+	<div class="mx-auto flex h-12 max-w-6xl items-center gap-3 px-4 font-mono text-[11px] uppercase">
+		<span class="flex shrink-0 items-center gap-2 font-semibold">
+			<span class="size-2 animate-blink rounded-full bg-cue-a" aria-hidden="true"></span>
+			{t('nowPlaying.label')}
+		</span>
+
+		<p class="min-w-0 truncate text-muted">
+			<span class="text-fg">{t('nowPlaying.track')}</span>
+			<span aria-hidden="true"> — </span>
+			{t('nowPlaying.artist')}
+		</p>
+
+		<span class="ml-auto hidden h-3.5 items-end gap-[3px] sm:flex" aria-hidden="true">
+			{
+				bars.map((delay) => (
+					<span class="h-full w-[3px] origin-bottom animate-eq bg-fg" style={`animation-delay:${delay}s`} />
+				))
+			}
+		</span>
+		<span class="hidden text-muted sm:inline" aria-hidden="true">128 BPM</span>
+
+		<div class="ml-auto sm:ml-2">
+			<LanguageSwitcher />
+		</div>
+	</div>
+</header>

@@ -10,24 +10,24 @@ const t = useTranslations(lang);
 const path = Astro.url.pathname.replace(/^\/en(\/|$)/, '/').replace(/^\//, '');
 ---
 
-<nav
-	aria-label={t('lang.switch')}
-	class="flex items-center gap-1 rounded-full border border-line bg-bg/70 p-1 text-sm backdrop-blur-md"
->
+<nav aria-label={t('lang.switch')} class="flex items-center font-mono text-[11px] uppercase">
 	{
-		(Object.keys(languages) as Lang[]).map((code) => (
-			<a
-				href={getRelativeLocaleUrl(code, path)}
-				hreflang={code}
-				lang={code}
-				aria-current={code === lang ? 'page' : undefined}
-				class:list={[
-					'rounded-full px-3 py-1 uppercase tracking-wide transition-colors',
-					code === lang ? 'bg-fg text-bg' : 'text-muted hover:text-fg',
-				]}
-			>
-				{code}
-			</a>
+		(Object.keys(languages) as Lang[]).map((code, i) => (
+			<>
+				{i > 0 && <span class="px-1.5 text-line" aria-hidden="true">/</span>}
+				<a
+					href={getRelativeLocaleUrl(code, path)}
+					hreflang={code}
+					lang={code}
+					aria-current={code === lang ? 'page' : undefined}
+					class:list={[
+						'transition-colors',
+						code === lang ? 'font-semibold text-fg' : 'text-muted hover:text-fg',
+					]}
+				>
+					{code}
+				</a>
+			</>
 		))
 	}
 </nav>

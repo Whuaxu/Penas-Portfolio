@@ -1,0 +1,63 @@
+---
+import { ArrowUpRight } from '@lucide/astro';
+import CuePads from './CuePads.astro';
+import Deck from './Deck.astro';
+import { profile } from '../data/profile';
+import { toLang, useTranslations } from '../i18n/utils';
+
+const t = useTranslations(toLang(Astro.currentLocale));
+
+const socials = [
+	{ label: 'GitHub', href: profile.links.github },
+	{ label: 'LinkedIn', href: profile.links.linkedin },
+];
+---
+
+<section class="mx-auto grid min-h-dvh max-w-6xl items-center gap-10 px-4 pt-20 pb-12 md:grid-cols-[1fr_auto] md:gap-12">
+	<div>
+		<p class="font-mono text-[11px] text-muted uppercase">
+			[ {profile.fullName} — {profile.location} ]
+		</p>
+
+		<h1
+			class="mt-4 font-mono text-[clamp(3.5rem,14vw,9.5rem)] leading-[0.85] font-extrabold tracking-[-0.06em] uppercase font-stretch-[112.5%]"
+		>
+			<span class="block">Javi</span>
+			<span class="block">
+				Pena<span class="ml-[0.08em] inline-block h-[0.12em] w-[0.5em] animate-blink bg-cue-a" aria-hidden="true"></span>
+			</span>
+		</h1>
+
+		<p class="mt-6 font-mono text-sm uppercase font-stretch-75% sm:text-base">
+			{t('hero.tagline')}
+		</p>
+
+		<p class="mt-4 max-w-md text-muted">
+			{t('hero.intro')}
+		</p>
+
+		<ul class="mt-6 flex gap-5 font-mono text-xs uppercase">
+			{
+				socials.map(({ label, href }) => (
+					<li>
+						<a
+							href={href}
+							target="_blank"
+							rel="noopener noreferrer"
+							class="group inline-flex items-center gap-1 border-b border-fg pb-0.5 transition hover:text-cue-e hover:border-cue-e"
+						>
+							{label}
+							<ArrowUpRight size={14} class="transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5" aria-hidden="true" />
+						</a>
+					</li>
+				))
+			}
+		</ul>
+
+		<div class="mt-10 max-w-xl">
+			<CuePads />
+		</div>
+	</div>
+
+	<Deck class="mx-auto w-56 sm:w-72 md:w-88 lg:w-104" />
+</section>
