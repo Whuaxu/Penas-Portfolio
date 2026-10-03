@@ -11,7 +11,7 @@ const grooves = [46, 43, 40, 37, 34, 31, 28, 25];
 ---
 
 <div data-deck class:list={['relative', className]}>
-	<div data-deck-platter class="relative aspect-square" role="img" aria-label={t('deck.vinyl')}>
+	<div data-deck-platter class="relative aspect-square cursor-grab touch-none select-none active:cursor-grabbing" role="img" aria-label={t('deck.vinyl')}>
 		<svg data-deck-disc viewBox="0 0 100 100" class="size-full will-change-transform">
 			<circle cx="50" cy="50" r="49" fill="#0a0a0a" />
 			{grooves.map((r) => <circle cx="50" cy="50" r={r} fill="none" stroke="#ffffff" stroke-opacity="0.08" stroke-width="0.4" />)}
@@ -111,11 +111,15 @@ const grooves = [46, 43, 40, 37, 34, 31, 28, 25];
 
 <script>
 	// Turntable-like deck: the angle accumulates and speed eases toward a target,
-	// so play, pause (vinyl brake) and hover speed-ups never jump.
+	// so play, pause (vinyl brake), hover speed-ups and scratches never jump.
 	const PLAY_SPEED = 60; // deg/s
 	const HOVER_SPEED = 300;
 	const START_EASING = 3;
 	const BRAKE_SECONDS = 2; // vinyl brake: time to a full stop, whatever the speed
+	const SPIN_DOWN_SECONDS = 0.6; // a flicked record with the motor off
+	const HAND_STILL_MS = 60; // no pointer movement for this long = hand holding the record still
+
+	const wrap = (deg: number) => ((deg % 360) + 360) % 360;
 
 	const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -132,6 +136,10 @@ const grooves = [46, 43, 40, 37, 34, 31, 28, 25];
 		let angle = 0;
 		let speed = playing ? PLAY_SPEED : 0;
 		let brakeDecel = 0; // deg/s², fixed when the brake starts
+		let scratching = false; // record held by the pointer
+		let handAngle = 0; // last pointer angle around the spindle
+		let handSpeed = 0; // deg/s the hand is moving the record at
+		let lastHandMove = 0;
 		let last = 0;
 		let frame = 0;
 
@@ -149,14 +157,20 @@ const grooves = [46, 43, 40, 37, 34, 31, 28, 25];
 		const tick = (now: number) => {
 			const dt = last ? Math.min((now - last) / 1000, 0.1) : 0;
 			last = now;
-			if (running()) {
-				const target = hovering && playing ? HOVER_SPEED : PLAY_SPEED;
-				speed += (target - speed) * Math.min(1, dt * START_EASING);
+			if (scratching) {
+				// The hand drives the record (angle is set in pointermove)
+				if (now - lastHandMove > HAND_STILL_MS) handSpeed = 0;
+				speed = handSpeed;
 			} else {
-				// Constant deceleration, like a real platter slowing down
-				speed = Math.max(0, speed - brakeDecel * dt);
+				if (running()) {
+					const target = hovering && playing ? HOVER_SPEED : PLAY_SPEED;
+					speed += (target - speed) * Math.min(1, dt * START_EASING);
+				} else {
+					// Constant deceleration, like a real platter slowing down
+					speed = Math.sign(speed) * Math.max(0, Math.abs(speed) - brakeDecel * dt);
+				}
+				angle = wrap(angle + speed * dt);
 			}
-			angle = (angle + speed * dt) % 360;
 			disc.style.transform = `rotate(${angle}deg)`;
 			frame = requestAnimationFrame(tick);
 		};
@@ -210,6 +224,47 @@ const grooves = [46, 43, 40, 37, 34, 31, 28, 25];
 
 		platter.addEventListener('pointerenter', () => (hovering = true));
 		platter.addEventListener('pointerleave', () => (hovering = false));
+
+		// Scratch: grab the record and it follows the hand around the spindle
+		const pointerAngle = (event: PointerEvent) => {
+			const box = platter.getBoundingClientRect();
+			const x = event.clientX - (box.left + box.width / 2);
+			const y = event.clientY - (box.top + box.height / 2);
+			return (Math.atan2(y, x) * 180) / Math.PI;
+		};
+
+		platter.addEventListener('pointerdown', (event) => {
+			if (event.button !== 0) return;
+			event.preventDefault();
+			platter.setPointerCapture(event.pointerId);
+			scratching = true;
+			handAngle = pointerAngle(event);
+			handSpeed = 0;
+			lastHandMove = performance.now();
+		});
+
+		platter.addEventListener('pointermove', (event) => {
+			if (!scratching) return;
+			const now = performance.now();
+			const current = pointerAngle(event);
+			const delta = wrap(current - handAngle + 180) - 180; // shortest way round
+			const elapsed = (now - lastHandMove) / 1000;
+			if (elapsed > 0) handSpeed = handSpeed * 0.5 + (delta / elapsed) * 0.5;
+			angle = wrap(angle + delta);
+			handAngle = current;
+			lastHandMove = now;
+		});
+
+		const release = () => {
+			if (!scratching) return;
+			scratching = false;
+			// Let go with the hand's speed: the motor pulls it back or it spins down
+			speed = handSpeed;
+			if (!running()) brakeDecel = Math.abs(speed) / SPIN_DOWN_SECONDS;
+			render();
+		};
+		platter.addEventListener('pointerup', release);
+		platter.addEventListener('pointercancel', release);
 
 		// Only animate while visible
 		new IntersectionObserver(([entry]) => {
