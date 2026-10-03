@@ -50,6 +50,10 @@ export const ui = {
     'dj.shows': 'Shows',
     'dj.soon': 'Próximamente',
     'dj.photoSoon': 'Foto próximamente',
+    'contact.kicker': 'Booking',
+    'contact.text': '¿Un proyecto, una oferta de trabajo o una sesión? Escríbeme por LinkedIn y hablamos.',
+    'footer.end': 'Fin de la cara B',
+    'footer.top': 'Volver arriba',
   },
   en: {
     'meta.title': 'Javi Pena - Portfolio',
@@ -93,6 +97,10 @@ export const ui = {
     'dj.shows': 'Shows',
     'dj.soon': 'Coming soon',
     'dj.photoSoon': 'Photo coming soon',
+    'contact.kicker': 'Booking',
+    'contact.text': "A project, a job offer or a set? Message me on LinkedIn and let's talk.",
+    'footer.end': 'End of side B',
+    'footer.top': 'Back to top',
   },
 } as const satisfies Record<Lang, Record<string, string>>;
 

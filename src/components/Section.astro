@@ -5,9 +5,11 @@ interface Props {
 	title: string;
 	/** Small mono caption shown next to the index, e.g. "Liner notes" */
 	kicker?: string;
+	/** Center the big title */
+	centered?: boolean;
 }
 
-const { id, index, title, kicker } = Astro.props;
+const { id, index, title, kicker, centered = false } = Astro.props;
 ---
 
 <section id={id} class="mx-auto max-w-6xl scroll-mt-16 px-4 py-24" aria-labelledby={`${id}-title`}>
@@ -18,7 +20,10 @@ const { id, index, title, kicker } = Astro.props;
 		</p>
 		<h2
 			id={`${id}-title`}
-			class="mt-6 font-mono text-[clamp(2.5rem,8vw,5.5rem)] leading-[0.9] font-extrabold tracking-[-0.05em] uppercase font-stretch-[112.5%]"
+			class:list={[
+				'mt-6 font-mono text-[clamp(2.5rem,8vw,5.5rem)] leading-[0.9] font-extrabold tracking-[-0.05em] uppercase font-stretch-[112.5%]',
+				centered && 'text-center',
+			]}
 		>
 			{title}
 		</h2>

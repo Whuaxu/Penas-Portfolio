@@ -1,0 +1,45 @@
+---
+// Mixer-style rotary knob used as a link: rests at MIN, turns to the middle on hover/focus
+interface Props {
+	label: string;
+	href: string;
+}
+
+const { label, href } = Astro.props;
+
+// Printed scale: 11 ticks over a 270° sweep (-135° → +135°)
+const ticks = Array.from({ length: 11 }, (_, i) => -135 + i * 27);
+---
+
+<a href={href} target="_blank" rel="noopener noreferrer" aria-label={label} class="knob group flex flex-col items-center gap-3">
+	<span class="font-mono text-xs uppercase transition-opacity group-hover:opacity-100 sm:opacity-70" aria-hidden="true">{label} ↗</span>
+
+	<span class="relative block size-28" aria-hidden="true">
+		<svg viewBox="0 0 100 100" class="absolute inset-0 size-full">
+			{
+				ticks.map((deg, i) => (
+					<line
+						x1="50"
+						y1={i === 0 || i === ticks.length - 1 ? 3 : 5}
+						x2="50"
+						y2="10"
+						stroke="#0a0a0a"
+						stroke-width={i === 0 || i === ticks.length - 1 || i === 5 ? 1.4 : 0.9}
+						stroke-linecap="round"
+						transform={`rotate(${deg} 50 50)`}
+					/>
+				))
+			}
+			<text x="16" y="96" fill="#6b6b6b" font-size="6.5" font-weight="700" letter-spacing="0.5" text-anchor="middle">MIN</text>
+			<text x="84" y="96" fill="#6b6b6b" font-size="6.5" font-weight="700" letter-spacing="0.5" text-anchor="middle">MAX</text>
+		</svg>
+
+		<span class="knob-body">
+			<span class="knob-rotor">
+				<span class="knob-skirt"></span>
+				<span class="knob-cap"></span>
+				<span class="knob-indicator"></span>
+			</span>
+		</span>
+	</span>
+</a>

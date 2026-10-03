@@ -1,0 +1,17 @@
+---
+import Knob from './Knob.astro';
+import Section from './Section.astro';
+import { profile } from '../data/profile';
+import { toLang, useTranslations } from '../i18n/utils';
+
+const t = useTranslations(toLang(Astro.currentLocale));
+---
+
+<Section id="contact" index={5} title={t('nav.contact')} kicker={t('contact.kicker')} centered>
+	<p class="mx-auto max-w-xl text-center text-lg leading-relaxed md:text-xl">{t('contact.text')}</p>
+
+	<div class="mt-14 flex justify-center gap-12 sm:gap-20">
+		<Knob label="LinkedIn" href={profile.links.linkedin} />
+		<Knob label="GitHub" href={profile.links.github} />
+	</div>
+</Section>
