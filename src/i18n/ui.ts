@@ -36,6 +36,7 @@ export const ui = {
     'about.education': 'Formación',
     'about.certifications': 'Certificaciones',
     'about.skills': 'Aptitudes',
+    'experience.now': 'hoy',
   },
   en: {
     'meta.title': 'Javi Pena - Portfolio',
@@ -65,6 +66,7 @@ export const ui = {
     'about.education': 'Education',
     'about.certifications': 'Certifications',
     'about.skills': 'Skills',
+    'experience.now': 'now',
   },
 } as const satisfies Record<Lang, Record<string, string>>;
 

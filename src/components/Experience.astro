@@ -1,0 +1,57 @@
+---
+import Section from './Section.astro';
+import { tracks, type Role } from '../data/experience';
+import { toLang, useTranslations } from '../i18n/utils';
+
+const lang = toLang(Astro.currentLocale);
+const t = useTranslations(lang);
+
+const monthFormat = new Intl.DateTimeFormat(lang, { month: 'short', year: 'numeric', timeZone: 'UTC' });
+const formatMonth = (ym: string) => monthFormat.format(new Date(`${ym}-01T00:00:00Z`));
+const period = ({ start, end }: Role) => `${formatMonth(start)} → ${end ? formatMonth(end) : t('experience.now')}`;
+
+// Vinyl-style position: 2 tracks per side (A1, A2, B1…)
+const position = (i: number) => `${String.fromCharCode(65 + Math.floor(i / 2))}${(i % 2) + 1}`;
+---
+
+<Section id="experience" index={2} title={t('nav.experience')} kicker="Tracklist">
+	<ol class="divide-y divide-dashed divide-fg/25">
+		{
+			tracks.map(({ company, location, roles, stack }, i) => {
+				const playing = roles.some((role) => !role.end);
+				return (
+					<li class="grid gap-x-8 gap-y-4 py-8 first:pt-0 md:grid-cols-[5rem_1fr_1.1fr]">
+						<span class="font-mono text-sm text-muted">{position(i)}</span>
+
+						<div>
+							<h3 class="font-mono text-2xl leading-none font-extrabold tracking-tight uppercase font-stretch-[112.5%] sm:text-3xl">
+								{company}
+							</h3>
+							<p class="mt-3 flex items-center gap-3 font-mono text-[11px] text-muted uppercase">
+								{location && <span>{location}</span>}
+								{playing && (
+									<span class="flex items-center gap-1.5 text-fg">
+										<span class="size-1.5 animate-blink rounded-full bg-cue-a" aria-hidden="true" />
+										{t('nowPlaying.label')}
+									</span>
+								)}
+							</p>
+						</div>
+
+						<div class="space-y-4">
+							<ul class="space-y-2">
+								{roles.map((role) => (
+									<li class="flex flex-wrap items-baseline justify-between gap-x-4">
+										<span class="font-semibold">{role.title[lang]}</span>
+										<span class="font-mono text-xs text-muted">{period(role)}</span>
+									</li>
+								))}
+							</ul>
+							<p class="font-mono text-[11px] leading-relaxed text-muted">{stack.map((item) => (typeof item === 'string' ? item : item[lang])).join(' · ')}</p>
+						</div>
+					</li>
+				);
+			})
+		}
+	</ol>
+</Section>
