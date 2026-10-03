@@ -35,7 +35,7 @@ const grooves = [46, 43, 40, 37, 34, 31, 28, 25];
 	<!-- CUE and PLAY/PAUSE, Pioneer XDJ-RX3 style -->
 	<div class="mt-6 flex justify-end gap-4">
 		<button type="button" data-deck-cue class="deck-btn" style="--led: var(--color-cue-b)" aria-label={t('deck.cue')}>
-			<span class="font-mono text-[10px] font-semibold tracking-wider">CUE</span>
+			<span class="font-mono text-xs font-semibold tracking-wider">CUE</span>
 		</button>
 		<button
 			type="button"
@@ -45,7 +45,7 @@ const grooves = [46, 43, 40, 37, 34, 31, 28, 25];
 			aria-label={t('deck.playPause')}
 			aria-pressed="true"
 		>
-			<svg viewBox="0 0 24 12" class="h-2.5" fill="currentColor" aria-hidden="true">
+			<svg viewBox="0 0 24 12" class="h-3" fill="currentColor" aria-hidden="true">
 				<path d="M1 1 L9 6 L1 11 Z" />
 				<path d="M11.5 11 L14.5 1" stroke="currentColor" stroke-width="1.2" />
 				<rect x="17" y="1" width="2.4" height="10" />
@@ -59,8 +59,8 @@ const grooves = [46, 43, 40, 37, 34, 31, 28, 25];
 	.deck-btn {
 		display: grid;
 		place-items: center;
-		width: 3.5rem;
-		height: 3.5rem;
+		width: 4.5rem;
+		height: 4.5rem;
 		border-radius: 9999px;
 		color: #f5f5f5;
 		background: radial-gradient(circle at 50% 35%, #2a2a2a, #0a0a0a 70%);
