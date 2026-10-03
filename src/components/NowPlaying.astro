@@ -7,8 +7,8 @@ const t = useTranslations(toLang(Astro.currentLocale));
 const bars = [0, 0.15, 0.3, 0.1, 0.25];
 ---
 
-<header class="fixed inset-x-0 top-0 z-20 border-b border-line bg-bg/75 backdrop-blur-md">
-	<div class="mx-auto flex h-12 max-w-6xl items-center gap-3 px-4 font-mono text-[11px] uppercase">
+<header class="fixed inset-x-0 top-0 z-20 px-3 pt-3">
+	<div class="liquid-glass liquid-glass-strong mx-auto flex h-12 max-w-6xl items-center gap-3 rounded-full px-5 font-mono text-[11px] uppercase">
 		<span class="flex shrink-0 items-center gap-2 font-semibold">
 			<span class="size-2 animate-blink rounded-full bg-cue-a" aria-hidden="true"></span>
 			{t('nowPlaying.label')}
@@ -29,7 +29,7 @@ const bars = [0, 0.15, 0.3, 0.1, 0.25];
 		</span>
 		<span class="hidden text-muted sm:inline" aria-hidden="true">128 BPM</span>
 
-		<div class="ml-auto flex items-center gap-2 sm:ml-2">
+		<div class="liquid-glass ml-auto flex items-center gap-2 rounded-full py-0.5 pr-3 pl-1 sm:ml-2">
 			<ThemeToggle />
 			<LanguageSwitcher />
 		</div>
