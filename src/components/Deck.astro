@@ -20,47 +20,50 @@ const grooves = [46, 43, 40, 37, 34, 31, 28, 25];
 		role="img"
 		aria-label={t('deck.platter')}
 	>
-		<!-- Light theme: turntable with a vinyl -->
-		<div class="absolute inset-0 dark:hidden">
-			<svg viewBox="0 0 100 100" class="deck-spin size-full">
-				<circle cx="50" cy="50" r="49" fill="#0a0a0a" />
-				{grooves.map((r) => <circle cx="50" cy="50" r={r} fill="none" stroke="#ffffff" stroke-opacity="0.08" stroke-width="0.4" />)}
-				<circle cx="50" cy="3.5" r="0.9" fill="#ffffff" fill-opacity="0.7" />
-				<circle cx="50" cy="50" r="17" fill="var(--color-cue-e)" />
-				<path id="deck-label-path" d="M50 38 a12 12 0 1 1 -0.01 0" fill="none" />
-				<text font-family="var(--font-mono)" font-size="3.2" font-weight="600" fill="#0a0a0a" letter-spacing="0.6">
-					<textPath href="#deck-label-path">JAVI PENA · SIDE A · 33⅓ ·</textPath>
-				</text>
-				<circle cx="50" cy="50" r="1.6" fill="#ffffff" />
-			</svg>
-
-			<!-- Tonearm -->
-			<svg viewBox="0 0 100 100" class="pointer-events-none absolute inset-0 size-full" aria-hidden="true">
-				<circle cx="94" cy="8" r="4" fill="#d4d4d4" stroke="#0a0a0a" stroke-width="0.6" />
-				<path d="M94 8 L88 52 L76 64" fill="none" stroke="#d4d4d4" stroke-width="2" stroke-linecap="round" />
-				<rect x="71" y="61" width="8" height="5" rx="1" transform="rotate(-45 75 63.5)" fill="#0a0a0a" />
-			</svg>
-		</div>
-
-		<!-- Dark theme: Pioneer CDJ-3000 style jog wheel seen from above -->
-		<div class="cdj absolute inset-0 hidden dark:block" aria-hidden="true">
-			<div class="cdj-well"></div>
-			<div class="cdj-side"></div>
-			<div class="cdj-light"></div>
-			<div class="cdj-bevel"></div>
-			<div class="cdj-top"></div>
-			<div class="cdj-grip deck-spin"></div>
-			<div class="cdj-screen">
-				<svg viewBox="0 0 100 100" class="cdj-position">
-					<circle cx="50" cy="50" r="45" />
+		<!-- Two-sided deck: flips over when the theme changes -->
+		<div class="deck-flip">
+			<!-- Light theme: turntable with a vinyl -->
+			<div class="deck-face">
+				<svg viewBox="0 0 100 100" class="deck-spin size-full">
+					<circle cx="50" cy="50" r="49" fill="#0a0a0a" />
+					{grooves.map((r) => <circle cx="50" cy="50" r={r} fill="none" stroke="#ffffff" stroke-opacity="0.08" stroke-width="0.4" />)}
+					<circle cx="50" cy="3.5" r="0.9" fill="#ffffff" fill-opacity="0.7" />
+					<circle cx="50" cy="50" r="17" fill="var(--color-cue-e)" />
+					<path id="deck-label-path" d="M50 38 a12 12 0 1 1 -0.01 0" fill="none" />
+					<text font-family="var(--font-mono)" font-size="3.2" font-weight="600" fill="#0a0a0a" letter-spacing="0.6">
+						<textPath href="#deck-label-path">JAVI PENA · SIDE A · 33⅓ ·</textPath>
+					</text>
+					<circle cx="50" cy="50" r="1.6" fill="#ffffff" />
 				</svg>
-				<span class="cdj-cue-marker"><span></span></span>
-				<span class="cdj-playhead deck-spin"><span></span></span>
-				<span class="cdj-info">
-					<span class="cdj-small">A1 · 128.0</span>
-					<Image src={djLogo} alt="" width={240} class="cdj-art" />
-					<span class="cdj-small">SIDE A</span>
-				</span>
+
+				<!-- Tonearm -->
+				<svg viewBox="0 0 100 100" class="pointer-events-none absolute inset-0 size-full" aria-hidden="true">
+					<circle cx="94" cy="8" r="4" fill="#d4d4d4" stroke="#0a0a0a" stroke-width="0.6" />
+					<path d="M94 8 L88 52 L76 64" fill="none" stroke="#d4d4d4" stroke-width="2" stroke-linecap="round" />
+					<rect x="71" y="61" width="8" height="5" rx="1" transform="rotate(-45 75 63.5)" fill="#0a0a0a" />
+				</svg>
+			</div>
+
+			<!-- Dark theme: Pioneer CDJ-3000 style jog wheel seen from above -->
+			<div class="deck-face deck-face-back cdj" aria-hidden="true">
+				<div class="cdj-well"></div>
+				<div class="cdj-side"></div>
+				<div class="cdj-light"></div>
+				<div class="cdj-bevel"></div>
+				<div class="cdj-top"></div>
+				<div class="cdj-grip deck-spin"></div>
+				<div class="cdj-screen">
+					<svg viewBox="0 0 100 100" class="cdj-position">
+						<circle cx="50" cy="50" r="45" />
+					</svg>
+					<span class="cdj-cue-marker"><span></span></span>
+					<span class="cdj-playhead deck-spin"><span></span></span>
+					<span class="cdj-info">
+						<span class="cdj-small">B1 · 128.0</span>
+						<Image src={djLogo} alt="" width={240} class="cdj-art" />
+						<span class="cdj-small">SIDE B</span>
+					</span>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -147,6 +150,38 @@ const grooves = [46, 43, 40, 37, 34, 31, 28, 25];
 			0 0 0 5px #0a0a0a,
 			0 0 32px 8px color-mix(in srgb, var(--led) 75%, transparent),
 			inset 0 0 10px 0 color-mix(in srgb, var(--led) 35%, transparent);
+	}
+
+	/* Flip between the vinyl (front) and the CDJ (back) */
+	[data-deck-platter] {
+		perspective: 1400px;
+	}
+
+	.deck-flip {
+		position: absolute;
+		inset: 0;
+		transform-style: preserve-3d;
+		transition: transform 800ms cubic-bezier(0.65, 0, 0.35, 1);
+	}
+
+	:global([data-theme='dark']) .deck-flip {
+		transform: rotateY(180deg);
+	}
+
+	.deck-face {
+		position: absolute;
+		inset: 0;
+		backface-visibility: hidden;
+	}
+
+	.deck-face-back {
+		transform: rotateY(180deg);
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.deck-flip {
+			transition: none;
+		}
 	}
 
 	/* CDJ-3000 style jog wheel */

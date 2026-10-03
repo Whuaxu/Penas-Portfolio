@@ -6,12 +6,12 @@ export const education: { title: Localized; school: string; period: string }[] =
   {
     title: { es: 'Grado en Ingeniería Informática', en: 'BSc in Computer Engineering' },
     school: 'ESEI · Universidade de Vigo',
-    period: '2021 — 2026',
+    period: '2021 - 2026',
   },
   {
     title: { es: 'Erasmus · Computer Engineering', en: 'Erasmus · Computer Engineering' },
     school: 'İstanbul Aydın University',
-    period: '2024 — 2025',
+    period: '2024 - 2025',
   },
 ];
 

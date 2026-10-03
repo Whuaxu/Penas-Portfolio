@@ -10,7 +10,10 @@ const year = new Date().getFullYear();
 <footer class="mx-auto max-w-6xl px-4 pt-8 pb-10">
 	<div class="flex flex-wrap items-center justify-between gap-4 border-t border-dashed border-fg/25 pt-4 font-mono text-[11px] text-muted uppercase">
 		<p>© {year} {profile.fullName} · {profile.location}</p>
-		<p class="hidden md:block">{t('footer.end')}</p>
+		<p class="hidden md:block">
+			<span class="dark:hidden">{t('footer.endA')}</span>
+			<span class="hidden dark:inline">{t('footer.endB')}</span>
+		</p>
 		<a href="#top" class="group inline-flex items-center gap-1 text-fg">
 			{t('footer.top')}
 			<ArrowUp size={14} class="transition-transform group-hover:-translate-y-0.5" aria-hidden="true" />
