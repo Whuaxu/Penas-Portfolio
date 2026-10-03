@@ -1,5 +1,6 @@
 ---
 import LanguageSwitcher from './LanguageSwitcher.astro';
+import ThemeToggle from './ThemeToggle.astro';
 import { toLang, useTranslations } from '../i18n/utils';
 
 const t = useTranslations(toLang(Astro.currentLocale));
@@ -28,7 +29,8 @@ const bars = [0, 0.15, 0.3, 0.1, 0.25];
 		</span>
 		<span class="hidden text-muted sm:inline" aria-hidden="true">128 BPM</span>
 
-		<div class="ml-auto sm:ml-2">
+		<div class="ml-auto flex items-center gap-2 sm:ml-2">
+			<ThemeToggle />
 			<LanguageSwitcher />
 		</div>
 	</div>

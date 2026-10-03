@@ -11,7 +11,7 @@ const t = useTranslations(toLang(Astro.currentLocale));
 	<p class="mx-auto max-w-xl text-center text-lg leading-relaxed md:text-xl">{t('contact.text')}</p>
 
 	<div class="mt-14 flex justify-center gap-12 sm:gap-20">
-		<Knob label="LinkedIn" href={profile.links.linkedin} />
-		<Knob label="GitHub" href={profile.links.github} />
+		<Knob label="LinkedIn" href={profile.links.linkedin} led="var(--color-cue-b)" />
+		<Knob label="GitHub" href={profile.links.github} led="var(--color-cue-c)" />
 	</div>
 </Section>

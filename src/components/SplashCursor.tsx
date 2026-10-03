@@ -23,7 +23,25 @@ interface SplashCursorProps {
   TRANSPARENT?: boolean;
   RAINBOW_MODE?: boolean;
   COLOR?: string;
+  /** Rainbow dye strength while <html data-theme="dark"> (light uses 0.15) */
+  DARK_COLOR_INTENSITY?: number;
+  /** Dye on the dark theme: rainbow like the light theme, or white club smoke */
+  DARK_STYLE?: 'rainbow' | 'smoke';
+  /** Rainbow saturation on the dark theme (light uses 1) */
+  DARK_SATURATION?: number;
+  /** 3D shading on the dark theme; it draws dark edges that look dirty on black */
+  DARK_SHADING?: boolean;
+  /** Simulation overrides on the dark theme (e.g. more curl for smoke) */
+  DARK_PHYSICS?: Physics;
 }
+
+type Physics = Partial<{
+  DENSITY_DISSIPATION: number;
+  VELOCITY_DISSIPATION: number;
+  CURL: number;
+  SPLAT_RADIUS: number;
+  SPLAT_FORCE: number;
+}>;
 
 interface Pointer {
   id: number;
@@ -74,7 +92,12 @@ export default function SplashCursor({
   BACK_COLOR = { r: 0.5, g: 0, b: 0 },
   TRANSPARENT = true,
   RAINBOW_MODE = true,
-  COLOR = '#ff0000'
+  COLOR = '#ff0000',
+  DARK_COLOR_INTENSITY = 0.4,
+  DARK_STYLE = 'rainbow',
+  DARK_SATURATION = 1,
+  DARK_SHADING = true,
+  DARK_PHYSICS
 }: SplashCursorProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -842,9 +865,24 @@ export default function SplashCursor({
       pressure = createDoubleFBO(simRes.width, simRes.height, r.internalFormat, r.format, texType, gl.NEAREST);
     }
 
+    const isDark = () => document.documentElement.dataset.theme === 'dark';
+
+    const lightPhysics: Physics = {
+      DENSITY_DISSIPATION: config.DENSITY_DISSIPATION,
+      VELOCITY_DISSIPATION: config.VELOCITY_DISSIPATION,
+      CURL: config.CURL,
+      SPLAT_RADIUS: config.SPLAT_RADIUS,
+      SPLAT_FORCE: config.SPLAT_FORCE
+    };
+
+    function applyTheme() {
+      Object.assign(config, lightPhysics, isDark() ? DARK_PHYSICS : undefined);
+      updateKeywords();
+    }
+
     function updateKeywords() {
       const displayKeywords: string[] = [];
-      if (config.SHADING) displayKeywords.push('SHADING');
+      if (config.SHADING && (DARK_SHADING || !isDark())) displayKeywords.push('SHADING');
       displayMaterial.setKeywords(displayKeywords);
     }
 
@@ -866,8 +904,12 @@ export default function SplashCursor({
       return Math.floor(input * pixelRatio);
     }
 
-    updateKeywords();
+    applyTheme();
     initFramebuffers();
+
+    // Re-tune the shader and physics when the theme toggles
+    const themeObserver = new MutationObserver(applyTheme);
+    themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
 
     let lastUpdateTime = Date.now();
     let colorUpdateTimer = 0.0;
@@ -1161,10 +1203,16 @@ export default function SplashCursor({
       if (!config.RAINBOW_MODE) {
         return hexToRGB(config.COLOR!);
       }
-      const c = HSVtoRGB(Math.random(), 1.0, 1.0);
-      c.r *= 0.15;
-      c.g *= 0.15;
-      c.b *= 0.15;
+      if (isDark() && DARK_STYLE === 'smoke') {
+        // Cool white smoke, each puff a little denser or thinner
+        const v = DARK_COLOR_INTENSITY * (0.6 + Math.random() * 0.4);
+        return { r: v * 0.86, g: v * 0.9, b: v };
+      }
+      const c = HSVtoRGB(Math.random(), isDark() ? DARK_SATURATION : 1.0, 1.0);
+      const intensity = isDark() ? DARK_COLOR_INTENSITY : 0.15;
+      c.r *= intensity;
+      c.g *= intensity;
+      c.b *= intensity;
       return c;
     }
 
@@ -1298,6 +1346,7 @@ export default function SplashCursor({
     return () => {
       controller.abort();
       cancelAnimationFrame(rafId);
+      themeObserver.disconnect();
     };
   }, [
     SIM_RESOLUTION,
@@ -1315,7 +1364,12 @@ export default function SplashCursor({
     BACK_COLOR,
     TRANSPARENT,
     RAINBOW_MODE,
-    COLOR
+    COLOR,
+    DARK_COLOR_INTENSITY,
+    DARK_STYLE,
+    DARK_SATURATION,
+    DARK_SHADING,
+    DARK_PHYSICS
   ]);
 
   return (

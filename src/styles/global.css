@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* Theme is driven by <html data-theme="light|dark"> (set before paint in Layout.astro) */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
 @theme {
   --color-bg: #ffffff;
   --color-fg: #0a0a0a;
@@ -28,6 +31,15 @@
   }
 }
 
+/* Dark theme: same tokens, new values */
+:root[data-theme="dark"] {
+  --color-bg: #0d0d0f;
+  --color-fg: #ededed;
+  --color-muted: #8e8e93;
+  --color-line: rgb(237 237 237 / 0.12);
+  color-scheme: dark;
+}
+
 @layer base {
   html {
     background-color: var(--color-bg);
@@ -36,6 +48,12 @@
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
     scroll-behavior: smooth;
+  }
+
+  /* Tailwind v4 resets buttons to the default cursor */
+  button:not(:disabled),
+  [role='button']:not(:disabled) {
+    cursor: pointer;
   }
 
   ::selection {
@@ -130,6 +148,25 @@
 
   .knob:focus-visible {
     outline: none;
+  }
+
+  /* Dark theme: scale ticks are LED segments, MIN always on, lit up to the knob level */
+  :root[data-theme='dark'] .knob-led {
+    stroke: color-mix(in srgb, var(--led) 22%, #2a2a2a);
+    transition:
+      stroke 150ms,
+      filter 150ms;
+  }
+
+  :root[data-theme='dark'] .knob-led:first-child,
+  :root[data-theme='dark'] .knob:is(:hover, :focus-visible) .knob-led-low {
+    stroke: var(--led);
+    filter: drop-shadow(0 0 1.5px var(--led));
+  }
+
+  :root[data-theme='dark'] .knob:is(:hover, :focus-visible) .knob-led-low {
+    /* light up one by one, following the knob turning */
+    transition-delay: calc(var(--i) * 55ms);
   }
 
   .knob:focus-visible .knob-body {

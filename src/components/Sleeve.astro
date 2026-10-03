@@ -9,7 +9,7 @@ const grooves = [44, 38, 32, 26];
 		aria-hidden="true"
 		class="absolute inset-0 size-full translate-x-[18%] transition-transform duration-700 ease-out group-hover:translate-x-[32%]"
 	>
-		<circle cx="50" cy="50" r="49" fill="#0a0a0a" />
+		<circle cx="50" cy="50" r="49" fill="#0a0a0a" stroke-width="0.6" class="stroke-transparent dark:stroke-fg/25" />
 		{grooves.map((r) => <circle cx="50" cy="50" r={r} fill="none" stroke="#ffffff" stroke-opacity="0.08" stroke-width="0.4" />)}
 		<circle cx="50" cy="50" r="17" fill="#ffffff" />
 		<circle cx="50" cy="50" r="1.6" fill="#0a0a0a" />

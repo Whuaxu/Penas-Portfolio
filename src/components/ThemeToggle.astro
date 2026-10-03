@@ -1,0 +1,34 @@
+---
+import { Moon, Sun } from '@lucide/astro';
+import { toLang, useTranslations } from '../i18n/utils';
+
+const t = useTranslations(toLang(Astro.currentLocale));
+---
+
+<button
+	type="button"
+	data-theme-toggle
+	aria-label={t('theme.toggle')}
+	class="grid size-7 place-items-center rounded-full text-muted transition-colors hover:bg-fg/10 hover:text-fg focus-visible:bg-fg/10 focus-visible:text-fg"
+>
+	<Sun size={15} class="hidden dark:block" aria-hidden="true" />
+	<Moon size={15} class="block dark:hidden" aria-hidden="true" />
+</button>
+
+<script>
+	const button = document.querySelector<HTMLButtonElement>('[data-theme-toggle]');
+	const root = document.documentElement;
+
+	const sync = () => button?.setAttribute('aria-pressed', String(root.dataset.theme === 'dark'));
+	sync();
+
+	button?.addEventListener('click', () => {
+		const theme = root.dataset.theme === 'dark' ? 'light' : 'dark';
+		root.dataset.theme = theme;
+		document.querySelector('meta[name="theme-color"]')?.setAttribute('content', theme === 'dark' ? '#0d0d0f' : '#ffffff');
+		try {
+			localStorage.setItem('theme', theme);
+		} catch {}
+		sync();
+	});
+</script>

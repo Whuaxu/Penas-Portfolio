@@ -23,13 +23,35 @@ const { title = t('meta.title'), description = t('meta.description') } = Astro.p
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="description" content={description} />
 		<meta name="theme-color" content="#ffffff" />
+		<script is:inline>
+			// Apply the saved theme (or the system one) before the first paint
+			(() => {
+				let saved = null;
+				try {
+					saved = localStorage.getItem('theme');
+				} catch {}
+				const dark = saved ? saved === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+				const theme = dark ? 'dark' : 'light';
+				document.documentElement.dataset.theme = theme;
+				document.querySelector('meta[name="theme-color"]')?.setAttribute('content', dark ? '#0d0d0f' : '#ffffff');
+			})();
+		</script>
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<link rel="icon" href="/favicon.ico" />
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
 	</head>
 	<body class="min-h-dvh overflow-x-hidden">
-		<SplashCursor client:only="react" DENSITY_DISSIPATION={0.5} VELOCITY_DISSIPATION={3} />
+		<!-- Dark theme: club smoke (grey dye with turbulent, wispy physics) -->
+		<SplashCursor
+			client:only="react"
+			DENSITY_DISSIPATION={0.5}
+			VELOCITY_DISSIPATION={3}
+			DARK_STYLE="smoke"
+			DARK_COLOR_INTENSITY={0.03}
+			DARK_SHADING={true}
+			DARK_PHYSICS={{ CURL: 30, SPLAT_RADIUS: 0.35, DENSITY_DISSIPATION: 1.2, VELOCITY_DISSIPATION: 1.5, SPLAT_FORCE: 4000 }}
+		/>
 		<div class="relative z-10">
 			<slot />
 		</div>

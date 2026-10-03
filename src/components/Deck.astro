@@ -8,12 +8,14 @@ interface Props {
 const { class: className } = Astro.props;
 const t = useTranslations(toLang(Astro.currentLocale));
 const grooves = [46, 43, 40, 37, 34, 31, 28, 25];
+// Strobe dots along the platter edge, lit only on the dark theme
+const strobeDots = Array.from({ length: 72 }, (_, i) => (i * 360) / 72);
 ---
 
 <div data-deck class:list={['relative', className]}>
 	<div data-deck-platter class="relative aspect-square cursor-grab touch-none select-none active:cursor-grabbing" role="img" aria-label={t('deck.vinyl')}>
 		<svg data-deck-disc viewBox="0 0 100 100" class="size-full will-change-transform">
-			<circle cx="50" cy="50" r="49" fill="#0a0a0a" />
+			<circle cx="50" cy="50" r="49" fill="#0a0a0a" stroke-width="0.6" class="stroke-transparent dark:stroke-fg/25" />
 			{grooves.map((r) => <circle cx="50" cy="50" r={r} fill="none" stroke="#ffffff" stroke-opacity="0.08" stroke-width="0.4" />)}
 			<circle cx="50" cy="3.5" r="0.9" fill="#ffffff" fill-opacity="0.7" />
 			<circle cx="50" cy="50" r="17" fill="var(--color-cue-e)" />
@@ -22,6 +24,9 @@ const grooves = [46, 43, 40, 37, 34, 31, 28, 25];
 				<textPath href="#deck-label-path">JAVI PENA · SIDE A · 33⅓ ·</textPath>
 			</text>
 			<circle cx="50" cy="50" r="1.6" fill="#ffffff" />
+			<g class="deck-strobe hidden dark:inline" aria-hidden="true">
+				{strobeDots.map((deg) => <circle cx="50" cy="1.9" r="0.45" transform={`rotate(${deg} 50 50)`} />)}
+			</g>
 		</svg>
 
 		<!-- Tonearm -->
@@ -29,6 +34,8 @@ const grooves = [46, 43, 40, 37, 34, 31, 28, 25];
 			<circle cx="94" cy="8" r="4" fill="#d4d4d4" stroke="#0a0a0a" stroke-width="0.6" />
 			<path d="M94 8 L88 52 L76 64" fill="none" stroke="#d4d4d4" stroke-width="2" stroke-linecap="round" />
 			<rect x="71" y="61" width="8" height="5" rx="1" transform="rotate(-45 75 63.5)" fill="#0a0a0a" />
+			<!-- Target light next to the tonearm, on at night -->
+			<circle cx="97" cy="20" r="1.1" class="deck-target-light hidden dark:inline" />
 		</svg>
 	</div>
 
@@ -96,6 +103,34 @@ const grooves = [46, 43, 40, 37, 34, 31, 28, 25];
 
 	.deck-btn[data-led='blink'] {
 		animation: led-blink 0.5s steps(2, start) infinite;
+	}
+
+	/* Dark theme: the gear lights up */
+	:global([data-theme='dark']) .deck-btn {
+		box-shadow:
+			0 0 0 3px color-mix(in srgb, var(--led) 40%, #111),
+			0 0 0 5px #0a0a0a,
+			0 0 10px 0 color-mix(in srgb, var(--led) 20%, transparent),
+			inset 0 1px 0 rgb(255 255 255 / 0.08);
+	}
+
+	:global([data-theme='dark']) .deck-btn[data-led='on'],
+	:global([data-theme='dark']) .deck-btn[data-led='blink'] {
+		box-shadow:
+			0 0 0 3px var(--led),
+			0 0 0 5px #0a0a0a,
+			0 0 32px 8px color-mix(in srgb, var(--led) 75%, transparent),
+			inset 0 0 10px 0 color-mix(in srgb, var(--led) 35%, transparent);
+	}
+
+	.deck-strobe {
+		fill: #ff5a1f;
+		filter: drop-shadow(0 0 0.6px #ff5a1f) drop-shadow(0 0 1.4px rgb(255 90 31 / 0.7));
+	}
+
+	.deck-target-light {
+		fill: #ffffff;
+		filter: drop-shadow(0 0 1px #fff) drop-shadow(0 0 3px rgb(255 255 255 / 0.8));
 	}
 
 	@keyframes led-blink {
