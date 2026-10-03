@@ -1,0 +1,33 @@
+---
+import { getRelativeLocaleUrl } from 'astro:i18n';
+import { languages, type Lang } from '../i18n/ui';
+import { toLang, useTranslations } from '../i18n/utils';
+
+const lang = toLang(Astro.currentLocale);
+const t = useTranslations(lang);
+
+// Path without the locale prefix, so the switch keeps the current page
+const path = Astro.url.pathname.replace(/^\/en(\/|$)/, '/').replace(/^\//, '');
+---
+
+<nav
+	aria-label={t('lang.switch')}
+	class="flex items-center gap-1 rounded-full border border-line bg-bg/70 p-1 text-sm backdrop-blur-md"
+>
+	{
+		(Object.keys(languages) as Lang[]).map((code) => (
+			<a
+				href={getRelativeLocaleUrl(code, path)}
+				hreflang={code}
+				lang={code}
+				aria-current={code === lang ? 'page' : undefined}
+				class:list={[
+					'rounded-full px-3 py-1 uppercase tracking-wide transition-colors',
+					code === lang ? 'bg-fg text-bg' : 'text-muted hover:text-fg',
+				]}
+			>
+				{code}
+			</a>
+		))
+	}
+</nav>
