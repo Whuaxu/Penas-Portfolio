@@ -60,9 +60,8 @@ export const tracks: Track[] = [
     roles: [{ title: { es: 'Profesional independiente', en: 'Freelance' }, start: '2023-07' }],
     stack: [
       'Rekordbox',
+      'iTunes',
       { es: 'Mezcla de música', en: 'Music mixing' },
-      { es: 'Estrategia de marketing', en: 'Marketing strategy' },
-      { es: 'Relaciones públicas', en: 'Public relations' },
     ],
   },
 ];

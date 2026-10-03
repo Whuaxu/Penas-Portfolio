@@ -1,0 +1,103 @@
+---
+import { Image } from 'astro:assets';
+import Section from './Section.astro';
+import djLogo from '../assets/dj-logo.png';
+import { djFacts, placeholderFrames, shows, venues } from '../data/dj';
+import { toLang, useTranslations } from '../i18n/utils';
+
+const lang = toLang(Astro.currentLocale);
+const t = useTranslations(lang);
+
+const local = (value: string | Record<typeof lang, string>) => (typeof value === 'string' ? value : value[lang]);
+const monthFormat = new Intl.DateTimeFormat(lang, { month: 'short', year: 'numeric', timeZone: 'UTC' });
+const frameNumber = (i: number) => String(i + 1).padStart(2, '0');
+---
+
+<Section id="dj" index={4} title={t('nav.dj')} kicker={t('dj.kicker')}>
+	<div class="grid items-center gap-10 md:grid-cols-[1.1fr_1fr] md:gap-16">
+		<Image src={djLogo} alt="Javi Pena" width={900} class="h-auto w-full max-w-xl" />
+
+		<div>
+			<p class="flex items-center gap-2 font-mono text-[11px] uppercase">
+				<span class="size-1.5 animate-blink rounded-full bg-cue-a" aria-hidden="true"></span>
+				{t('nowPlaying.label')} · {t('dj.since')}
+			</p>
+			<p class="mt-4 text-lg leading-relaxed md:text-xl">{t('dj.text')}</p>
+		</div>
+	</div>
+
+	<dl class="mt-12 grid border-t border-line font-mono text-xs md:grid-cols-3">
+		{
+			djFacts.map(({ label, items }) => (
+				<div class="border-b border-line py-4 md:pr-6">
+					<dt class="mb-2 font-semibold uppercase">{label[lang]}</dt>
+					<dd class="leading-relaxed text-muted">{items.map(local).join(' · ')}</dd>
+				</div>
+			))
+		}
+	</dl>
+
+	<!-- Venues, printed like the back of a tour shirt -->
+	<div class="mt-16">
+		<h3 class="mb-3 font-mono text-[11px] text-muted uppercase">{t('dj.venues')}</h3>
+		<div class="grid gap-x-12 gap-y-8 md:grid-cols-2">
+			{
+				venues.map(({ region, list }) => (
+					<div>
+						<p class="flex justify-between border-b border-fg pb-2 font-mono text-xs font-semibold uppercase">
+							{region[lang]}
+							<span class="font-normal text-muted">{list.length}</span>
+						</p>
+						<ul class="divide-y divide-dashed divide-fg/25 font-mono text-xs">
+							{list.map(({ name, place, note }) => (
+								<li class="flex items-baseline justify-between gap-4 py-2.5">
+									<span class="uppercase">{name}</span>
+									<span class="text-right text-muted">{note ? note[lang] : place}</span>
+								</li>
+							))}
+						</ul>
+					</div>
+				))
+			}
+		</div>
+	</div>
+
+	<!-- Contact sheet: show photos, or empty numbered frames until there are some -->
+	<div class="mt-16">
+		<h3 class="mb-3 flex justify-between font-mono text-[11px] text-muted uppercase">
+			<span>{t('dj.shows')}</span>
+			<span>{shows.length > 0 ? shows.length : t('dj.soon')}</span>
+		</h3>
+		<ul class="grid grid-cols-2 gap-3 md:grid-cols-3">
+			{
+				shows.length > 0
+					? shows.map(({ photo, alt, caption, date }, i) => (
+							<li class="group">
+								<div class="aspect-4/5 overflow-hidden border border-fg">
+									<Image
+										src={photo}
+										alt={alt[lang]}
+										width={800}
+										class="size-full object-cover grayscale transition duration-500 group-hover:scale-105 group-hover:grayscale-0"
+									/>
+								</div>
+								<p class="mt-2 flex justify-between gap-2 font-mono text-[10px] text-muted uppercase">
+									<span>
+										{frameNumber(i)} {caption && `· ${caption}`}
+									</span>
+									{date && <span>{monthFormat.format(new Date(`${date}-01T00:00:00Z`))}</span>}
+								</p>
+							</li>
+						))
+					: Array.from({ length: placeholderFrames }, (_, i) => (
+							<li class:list={[i === 2 && 'hidden md:block']}>
+								<div class="grid aspect-4/3 place-items-center border border-dashed border-fg/40 font-mono text-[10px] text-muted uppercase">
+									{t('dj.photoSoon')}
+								</div>
+								<p class="mt-2 font-mono text-[10px] text-muted uppercase">{frameNumber(i)}</p>
+							</li>
+						))
+			}
+		</ul>
+	</div>
+</Section>

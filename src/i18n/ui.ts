@@ -42,6 +42,14 @@ export const ui = {
     'projects.github': 'Mientras tanto, en GitHub',
     'projects.live': 'Web',
     'projects.code': 'Código',
+    'dj.kicker': 'Cabina',
+    'dj.since': 'desde 2023',
+    'dj.text':
+      'Cuando cierro el editor, me subo a la cabina. Pincho cada semana en salas y eventos de Galicia y he llevado mis sesiones a Estambul, donde formé parte de la gira ERASMUS Dreamland 2024/2025 y organicé mis propias fiestas. Me adapto a cada pista, con la música urbana como especialidad.',
+    'dj.venues': 'Dónde he pinchado',
+    'dj.shows': 'Shows',
+    'dj.soon': 'Próximamente',
+    'dj.photoSoon': 'Foto próximamente',
   },
   en: {
     'meta.title': 'Javi Pena - Portfolio',
@@ -77,6 +85,14 @@ export const ui = {
     'projects.github': 'Meanwhile, on GitHub',
     'projects.live': 'Website',
     'projects.code': 'Code',
+    'dj.kicker': 'Booth',
+    'dj.since': 'since 2023',
+    'dj.text':
+      'When I close the editor, I step into the booth. I play weekly at clubs and events across Galicia and have taken my sets to Istanbul, where I was part of the ERASMUS Dreamland 2024/2025 tour and threw my own parties. I read every dancefloor, with urban music as my specialty.',
+    'dj.venues': "Where I've played",
+    'dj.shows': 'Shows',
+    'dj.soon': 'Coming soon',
+    'dj.photoSoon': 'Photo coming soon',
   },
 } as const satisfies Record<Lang, Record<string, string>>;
 
