@@ -1,12 +1,11 @@
 @import "tailwindcss";
 
 @theme {
-  --color-ink: #0b0a10;
-  --color-ink-soft: #15131c;
-  --color-paper: #f4f1ea;
-  --color-muted: #8f8a9c;
-  --color-line: rgb(244 241 234 / 0.12);
-  --color-accent: #b4a5ff;
+  --color-bg: #ffffff;
+  --color-fg: #0a0a0a;
+  --color-muted: #737373;
+  --color-line: rgb(10 10 10 / 0.1);
+  --color-accent: #7c5cff;
 
   --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
   --font-serif: "Instrument Serif", ui-serif, Georgia, serif;
@@ -14,8 +13,8 @@
 
 @layer base {
   html {
-    background-color: var(--color-ink);
-    color: var(--color-paper);
+    background-color: var(--color-bg);
+    color: var(--color-fg);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
@@ -23,6 +22,6 @@
 
   ::selection {
     background-color: var(--color-accent);
-    color: var(--color-ink);
+    color: var(--color-bg);
   }
 }
