@@ -1,0 +1,76 @@
+---
+import { ArrowUpRight } from '@lucide/astro';
+import { Image } from 'astro:assets';
+import Section from './Section.astro';
+import Sleeve from './Sleeve.astro';
+import djLogo from '../assets/dj-logo.png';
+import { releases } from '../data/projects';
+import { profile } from '../data/profile';
+import { toLang, useTranslations } from '../i18n/utils';
+
+const lang = toLang(Astro.currentLocale);
+const t = useTranslations(lang);
+
+const linkClass = 'group/link inline-flex items-center gap-1 border-b border-fg pb-0.5 font-mono text-xs uppercase';
+const arrowClass = 'transition group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5';
+---
+
+<Section id="projects" index={3} title={t('nav.projects')} kicker="Discography">
+	<ol class="grid gap-x-10 gap-y-16 md:grid-cols-2 lg:grid-cols-3">
+		{
+			releases.map(({ catalog, year, title, description, stack, repo, url, cover, coverAlt }) => (
+				<li>
+					<Sleeve>
+						<Image
+							src={cover}
+							alt={coverAlt[lang]}
+							width={600}
+							class="size-full object-cover grayscale transition duration-500 group-hover:grayscale-0"
+						/>
+						<span class="absolute top-3 left-3 bg-bg px-1 font-mono text-[10px] uppercase">{catalog}</span>
+					</Sleeve>
+
+					<p class="mt-6 font-mono text-[11px] text-muted uppercase">{catalog} · {year}</p>
+					<h3 class="mt-2 font-mono text-xl leading-tight font-extrabold uppercase font-stretch-[112.5%]">{title[lang]}</h3>
+					<p class="mt-3 text-muted">{description[lang]}</p>
+					<p class="mt-3 font-mono text-[11px] text-muted">{stack.join(' · ')}</p>
+					<div class="mt-4 flex gap-5">
+						{url && (
+							<a href={url} target="_blank" rel="noopener noreferrer" class={linkClass}>
+								{t('projects.live')}
+								<ArrowUpRight size={14} class={arrowClass} aria-hidden="true" />
+							</a>
+						)}
+						{repo && (
+							<a href={repo} target="_blank" rel="noopener noreferrer" class={linkClass}>
+								{t('projects.code')}
+								<ArrowUpRight size={14} class={arrowClass} aria-hidden="true" />
+							</a>
+						)}
+					</div>
+				</li>
+			))
+		}
+
+		<!-- Next release: white label sleeve with the DJ logo -->
+		<li>
+			<Sleeve>
+				<div class="flex size-full flex-col justify-between p-3 font-mono text-[10px] uppercase">
+					<span>JPB-003</span>
+					<Image src={djLogo} alt="" width={480} class="mx-auto h-auto w-4/5" />
+					<span class="self-end text-muted">Side B</span>
+				</div>
+			</Sleeve>
+
+			<p class="mt-6 font-mono text-[11px] text-muted uppercase">JPB-003 · Unreleased</p>
+			<h3 class="mt-2 font-mono text-xl leading-tight font-extrabold uppercase font-stretch-[112.5%]">{t('projects.status')}</h3>
+			<p class="mt-3 text-muted">{t('projects.text')}</p>
+			<div class="mt-4">
+				<a href={profile.links.github} target="_blank" rel="noopener noreferrer" class={linkClass}>
+					{t('projects.github')}
+					<ArrowUpRight size={14} class={arrowClass} aria-hidden="true" />
+				</a>
+			</div>
+		</li>
+	</ol>
+</Section>

@@ -37,6 +37,11 @@ export const ui = {
     'about.certifications': 'Certificaciones',
     'about.skills': 'Aptitudes',
     'experience.now': 'hoy',
+    'projects.status': 'Próximamente',
+    'projects.text': 'Este lado del disco todavía está en el estudio. Estoy preparando los proyectos que irán aquí.',
+    'projects.github': 'Mientras tanto, en GitHub',
+    'projects.live': 'Web',
+    'projects.code': 'Código',
   },
   en: {
     'meta.title': 'Javi Pena - Portfolio',
@@ -67,6 +72,11 @@ export const ui = {
     'about.certifications': 'Certifications',
     'about.skills': 'Skills',
     'experience.now': 'now',
+    'projects.status': 'Coming soon',
+    'projects.text': "This side of the record is still in the studio. I'm getting ready the projects that will land here.",
+    'projects.github': 'Meanwhile, on GitHub',
+    'projects.live': 'Website',
+    'projects.code': 'Code',
   },
 } as const satisfies Record<Lang, Record<string, string>>;
 
