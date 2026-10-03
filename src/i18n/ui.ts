@@ -82,7 +82,7 @@ export const ui = {
     'about.p1':
       "I'm Javier Pena Bello, a computer engineer from the Higher School of Computer Engineering (ESEI) at the University of Vigo, with an Erasmus year at İstanbul Aydın University. Today I work as a full stack developer at ALIA Technologies and as an advisor at Auria Technologies, in Ourense.",
     'about.p2':
-      "I move between backend work with TypeScript and Node.js, ERPs with Odoo and AI-driven automation. Right now I'm training in cybersecurity, a field I'm especially excited about. And since 2023 I have a second booth: the DJ one.",
+      "I move between backend work with TypeScript and Node.js, ERPs with Odoo and AI-driven automation. Right now I'm training in cybersecurity, a field I'm especially excited about. And since 2023 I have a second cabin: the DJ one.",
     'about.education': 'Education',
     'about.certifications': 'Certifications',
     'about.skills': 'Skills',
@@ -92,10 +92,10 @@ export const ui = {
     'projects.github': 'Meanwhile, on GitHub',
     'projects.live': 'Website',
     'projects.code': 'Code',
-    'dj.kicker': 'Booth',
+    'dj.kicker': 'Cabin',
     'dj.since': 'since 2023',
     'dj.text':
-      'When I close the editor, I step into the booth. I play weekly at clubs and events across Galicia and have taken my sets to Istanbul, where I was part of the ERASMUS Dreamland 2024/2025 tour and threw my own parties. I read every dancefloor, with urban music as my specialty.',
+      'When I close the editor, I step into the cabin. I play weekly at clubs and events across Galicia and have taken my sets to Istanbul, where I was part of the ERASMUS Dreamland 2024/2025 tour and threw my own parties. I read every dancefloor, with urban music as my specialty.',
     'dj.venues': "Where I've played",
     'dj.shows': 'Shows',
     'dj.soon': 'Coming soon',
