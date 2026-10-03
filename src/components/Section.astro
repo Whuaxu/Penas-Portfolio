@@ -1,0 +1,30 @@
+---
+interface Props {
+	id: string;
+	index: number;
+	title: string;
+	/** Small mono caption shown next to the index, e.g. "Liner notes" */
+	kicker?: string;
+}
+
+const { id, index, title, kicker } = Astro.props;
+---
+
+<section id={id} class="mx-auto max-w-6xl scroll-mt-16 px-4 py-24" aria-labelledby={`${id}-title`}>
+	<header class="border-t border-fg pt-4">
+		<p class="flex justify-between font-mono text-[11px] text-muted uppercase">
+			<span>{String(index).padStart(2, '0')}</span>
+			{kicker && <span>{kicker}</span>}
+		</p>
+		<h2
+			id={`${id}-title`}
+			class="mt-6 font-mono text-[clamp(2.5rem,8vw,5.5rem)] leading-[0.9] font-extrabold tracking-[-0.05em] uppercase font-stretch-[112.5%]"
+		>
+			{title}
+		</h2>
+	</header>
+
+	<div class="mt-12">
+		<slot />
+	</div>
+</section>

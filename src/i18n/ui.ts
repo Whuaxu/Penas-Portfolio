@@ -28,6 +28,14 @@ export const ui = {
     'nav.projects': 'Proyectos',
     'nav.dj': 'DJ',
     'nav.contact': 'Contacto',
+    'about.kicker': 'Notas del disco',
+    'about.p1':
+      'Soy Javier Pena Bello, ingeniero informático por la Escola Superior de Enxeñaría Informática de la Universidade de Vigo, con un año de Erasmus en İstanbul Aydın University. Hoy trabajo como desarrollador full stack en ALIA Technologies y como advisor en Auria Technologies, en Ourense.',
+    'about.p2':
+      'Me muevo entre el backend con TypeScript y Node.js, los ERP con Odoo y la automatización con IA. Ahora mismo me estoy formando en ciberseguridad, un campo que me entusiasma especialmente. Y desde 2023 tengo otra cabina: la de DJ.',
+    'about.education': 'Formación',
+    'about.certifications': 'Certificaciones',
+    'about.skills': 'Aptitudes',
   },
   en: {
     'meta.title': 'Javi Pena - Portfolio',
@@ -49,6 +57,14 @@ export const ui = {
     'nav.projects': 'Projects',
     'nav.dj': 'DJ',
     'nav.contact': 'Contact',
+    'about.kicker': 'Liner notes',
+    'about.p1':
+      "I'm Javier Pena Bello, a computer engineer from the Higher School of Computer Engineering (ESEI) at the University of Vigo, with an Erasmus year at İstanbul Aydın University. Today I work as a full stack developer at ALIA Technologies and as an advisor at Auria Technologies, in Ourense.",
+    'about.p2':
+      "I move between backend work with TypeScript and Node.js, ERPs with Odoo and AI-driven automation. Right now I'm training in cybersecurity, a field I'm especially excited about. And since 2023 I have a second booth: the DJ one.",
+    'about.education': 'Education',
+    'about.certifications': 'Certifications',
+    'about.skills': 'Skills',
   },
 } as const satisfies Record<Lang, Record<string, string>>;
 

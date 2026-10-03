@@ -1,0 +1,68 @@
+---
+import Section from './Section.astro';
+import { certifications, education, skillGroups } from '../data/about';
+import { toLang, useTranslations } from '../i18n/utils';
+
+const lang = toLang(Astro.currentLocale);
+const t = useTranslations(lang);
+---
+
+<Section id="about" index={1} title={t('nav.about')} kicker={t('about.kicker')}>
+	<div class="grid gap-12 md:grid-cols-[1.2fr_1fr] md:gap-16">
+		<div class="space-y-5 text-lg leading-relaxed md:text-xl">
+			<p>{t('about.p1')}</p>
+			<p class="text-muted">{t('about.p2')}</p>
+		</div>
+
+		<div class="space-y-10 font-mono text-xs">
+			<div>
+				<h3 class="mb-3 text-muted uppercase">{t('about.education')}</h3>
+				<ul class="divide-y divide-line border-y border-line">
+					{
+						education.map(({ title, school, period }) => (
+							<li class="grid grid-cols-[1fr_auto] gap-x-4 gap-y-1 py-3">
+								<span class="font-semibold uppercase">{title[lang]}</span>
+								<span class="text-muted">{period}</span>
+								<span class="text-muted">{school}</span>
+							</li>
+						))
+					}
+				</ul>
+			</div>
+
+			<div>
+				<h3 class="mb-3 flex justify-between text-muted uppercase">
+					{t('about.certifications')}
+					<span>{certifications.length}</span>
+				</h3>
+				<ol class="divide-y divide-line border-y border-line">
+					{
+						certifications.map(({ name, issuer }, i) => (
+							<li class="grid grid-cols-[auto_1fr_auto] gap-4 py-2.5">
+								<span class="text-muted">{String(i + 1).padStart(2, '0')}</span>
+								<span>{name}</span>
+								<span class="text-right text-muted">{issuer}</span>
+							</li>
+						))
+					}
+				</ol>
+			</div>
+		</div>
+	</div>
+
+	<div class="mt-16 font-mono text-xs">
+		<h3 class="mb-3 text-muted uppercase">{t('about.skills')}</h3>
+		<dl class="grid border-t border-line sm:grid-cols-2 lg:grid-cols-4">
+			{
+				skillGroups.map(({ title, items }) => (
+					<div class="border-b border-line py-4 sm:pr-6">
+						<dt class="mb-2 font-semibold uppercase">{title[lang]}</dt>
+						<dd class="leading-relaxed text-muted">
+							{items.map((item) => (typeof item === 'string' ? item : item[lang])).join(' · ')}
+						</dd>
+					</div>
+				))
+			}
+		</dl>
+	</div>
+</Section>
