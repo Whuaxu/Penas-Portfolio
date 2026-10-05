@@ -2,6 +2,7 @@
 import '@fontsource-variable/inter';
 import '@fontsource-variable/martian-mono/wdth.css';
 import '../styles/global.css';
+import ScrollReveal from '../components/ScrollReveal.astro';
 import SplashCursor from '../components/SplashCursor.astro';
 import { getAbsoluteLocaleUrl } from 'astro:i18n';
 import { profile } from '../data/profile';
@@ -123,5 +124,6 @@ const person = {
 		<div class="relative z-10">
 			<slot />
 		</div>
+		<ScrollReveal />
 	</body>
 </html>

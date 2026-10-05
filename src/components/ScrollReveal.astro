@@ -1,0 +1,49 @@
+---
+// Fades content in as it scrolls into view. Targets are picked here so section
+// components stay untouched; items in a list enter one after another.
+---
+
+<script>
+	const TARGETS = [
+		'main section[aria-labelledby] > header',
+		'main section[aria-labelledby] > div > *:not(ol):not(ul):not(dl)',
+		'main section[aria-labelledby] li',
+		'main section[aria-labelledby] dl > div',
+		'footer',
+	].join(',');
+
+	const STAGGER_MS = 70;
+	const MAX_STAGGER = 6;
+
+	const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+	if (!reduceMotion && 'IntersectionObserver' in window) {
+		const root = document.documentElement;
+		const items = [...document.querySelectorAll<HTMLElement>(TARGETS)].filter(
+			// Skip nested matches (e.g. an li inside a block that already reveals)
+			(el, _, all) => !all.some((other) => other !== el && other.contains(el) && !other.matches('ol, ul')),
+		);
+
+		// Anything already on screen at load stays visible, only what is below fades in
+		const viewport = window.innerHeight;
+		items.forEach((el) => {
+			if (el.getBoundingClientRect().top > viewport * 0.95) el.dataset.reveal = '';
+		});
+
+		// Siblings revealed together get a small cascade
+		const observer = new IntersectionObserver(
+			(entries) => {
+				const entering = entries.filter((entry) => entry.isIntersecting).map((entry) => entry.target as HTMLElement);
+				entering.forEach((el, i) => {
+					el.style.transitionDelay = `${Math.min(i, MAX_STAGGER) * STAGGER_MS}ms`;
+					el.dataset.reveal = 'in';
+					observer.unobserve(el);
+				});
+			},
+			{ rootMargin: '0px 0px -8% 0px', threshold: 0.12 },
+		);
+
+		items.forEach((el) => el.dataset.reveal !== undefined && observer.observe(el));
+		root.classList.add('reveal-ready');
+	}
+</script>
