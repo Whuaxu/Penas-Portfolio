@@ -49,6 +49,13 @@
     scroll-behavior: smooth;
   }
 
+  /* One clear focus ring for every interactive element */
+  :focus-visible {
+    outline: 2px solid var(--color-fg);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+
   /* Tailwind v4 resets buttons to the default cursor */
   button:not(:disabled),
   [role='button']:not(:disabled) {
@@ -145,6 +152,26 @@
   :root[data-theme='dark'] a.liquid-glass:hover,
   :root[data-theme='dark'] a.liquid-glass:focus-visible {
     --glass-tint: rgb(255 255 255 / 0.14);
+  }
+}
+
+/* Skip link: hidden until focused with the keyboard */
+@layer components {
+  .skip-link {
+    position: fixed;
+    top: 0.75rem;
+    left: 50%;
+    z-index: 50;
+    padding: 0.6rem 1.1rem;
+    border-radius: 9999px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    transform: translate(-50%, -200%);
+  }
+
+  .skip-link:focus-visible {
+    transform: translate(-50%, 0);
   }
 }
 
