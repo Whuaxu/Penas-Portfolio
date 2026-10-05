@@ -9,8 +9,9 @@ export const defaultLang: Lang = 'es';
 
 export const ui = {
   es: {
-    'meta.title': 'Javi Pena - Portfolio',
+    'meta.title': 'Javi Pena · Desarrollador de software y DJ',
     'meta.description': 'Portfolio de Javi Pena, ingeniero informático, desarrollador full stack y DJ.',
+    'meta.ogAlt': 'Portada del portfolio de Javi Pena con un vinilo en el plato',
     'lang.switch': 'Cambiar idioma',
     'a11y.skip': 'Saltar al contenido',
     'theme.toggle': 'Modo oscuro',
@@ -59,8 +60,9 @@ export const ui = {
     'footer.top': 'Volver arriba',
   },
   en: {
-    'meta.title': 'Javi Pena - Portfolio',
+    'meta.title': 'Javi Pena · Software Developer & DJ',
     'meta.description': 'Portfolio of Javi Pena, computer engineer, full stack developer and DJ.',
+    'meta.ogAlt': 'Javi Pena portfolio homepage with a vinyl on the deck',
     'lang.switch': 'Change language',
     'a11y.skip': 'Skip to content',
     'theme.toggle': 'Dark mode',

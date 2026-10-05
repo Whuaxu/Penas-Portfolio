@@ -3,6 +3,9 @@ import '@fontsource-variable/inter';
 import '@fontsource-variable/martian-mono/wdth.css';
 import '../styles/global.css';
 import SplashCursor from '../components/SplashCursor.astro';
+import { getAbsoluteLocaleUrl } from 'astro:i18n';
+import { profile } from '../data/profile';
+import { languages, type Lang } from '../i18n/ui';
 import { toLang, useTranslations } from '../i18n/utils';
 
 interface Props {
@@ -17,6 +20,25 @@ const { title = t('meta.title'), description = t('meta.description') } = Astro.p
 
 // Set by Vercel during its builds
 const onVercel = process.env.VERCEL === '1';
+
+// SEO: canonical URL, language alternates and share image
+const path = Astro.url.pathname.replace(/^\/en(\/|$)/, '/').replace(/^\//, '');
+const canonical = getAbsoluteLocaleUrl(lang, path);
+const alternates = (Object.keys(languages) as Lang[]).map((code) => ({ code, href: getAbsoluteLocaleUrl(code, path) }));
+const ogLocale = { es: 'es_ES', en: 'en_US' } as const;
+const ogImage = new URL(`/og/${lang}.png`, Astro.site).href;
+
+const person = {
+	'@context': 'https://schema.org',
+	'@type': 'Person',
+	name: profile.fullName,
+	alternateName: profile.name,
+	url: Astro.site?.href,
+	jobTitle: lang === 'es' ? 'Desarrollador de software' : 'Software Developer',
+	address: { '@type': 'PostalAddress', addressLocality: 'Carballo', addressRegion: 'Galicia', addressCountry: 'ES' },
+	alumniOf: 'Universidade de Vigo',
+	sameAs: [profile.links.github, profile.links.linkedin],
+};
 ---
 
 <!doctype html>
@@ -44,6 +66,28 @@ const onVercel = process.env.VERCEL === '1';
 		<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
+		<link rel="canonical" href={canonical} />
+		{alternates.map(({ code, href }) => <link rel="alternate" hreflang={code} href={href} />)}
+		<link rel="alternate" hreflang="x-default" href={getAbsoluteLocaleUrl('es', path)} />
+		<link rel="sitemap" href="/sitemap-index.xml" />
+
+		<meta property="og:type" content="website" />
+		<meta property="og:site_name" content={profile.name} />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:url" content={canonical} />
+		<meta property="og:locale" content={ogLocale[lang]} />
+		{alternates.filter(({ code }) => code !== lang).map(({ code }) => <meta property="og:locale:alternate" content={ogLocale[code]} />)}
+		<meta property="og:image" content={ogImage} />
+		<meta property="og:image:width" content="1200" />
+		<meta property="og:image:height" content="630" />
+		<meta property="og:image:alt" content={t('meta.ogAlt')} />
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content={title} />
+		<meta name="twitter:description" content={description} />
+		<meta name="twitter:image" content={ogImage} />
+
+		<script type="application/ld+json" set:html={JSON.stringify(person)} />
 		<!-- Vercel Web Analytics (cookieless; the script only exists on Vercel deployments) -->
 		{
 			onVercel && (
