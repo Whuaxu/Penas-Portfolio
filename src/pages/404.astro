@@ -1,0 +1,70 @@
+---
+import { ArrowLeft } from '@lucide/astro';
+import CdjJog from '../components/CdjJog.astro';
+import Layout from '../layouts/Layout.astro';
+
+// A single page serves every unknown URL: the language is picked on the client
+// from the path (/en/... → English), Spanish otherwise
+const grooves = [46, 43, 40, 37, 34, 31, 28, 25];
+---
+
+<Layout title="404 · Javi Pena" description="Pista no encontrada · Track not found">
+	<main id="content" tabindex="-1" class="grid min-h-dvh place-items-center px-4 py-16 outline-none">
+		<div class="flex flex-col items-center text-center">
+			<!-- Side A (light): the needle skips off the vinyl. Side B (dark): the CDJ stutters -->
+			<div class="error-deck relative w-56 sm:w-64" aria-hidden="true">
+				<div class="dark:hidden">
+					<svg viewBox="0 0 100 100" class="error-spin size-full">
+						<circle cx="50" cy="50" r="49" fill="#0a0a0a"></circle>
+						{grooves.map((r) => <circle cx="50" cy="50" r={r} fill="none" stroke="#ffffff" stroke-opacity="0.08" stroke-width="0.4" />)}
+						<circle cx="50" cy="50" r="17" fill="var(--color-cue-a)"></circle>
+						<text x="50" y="54.5" text-anchor="middle" font-family="var(--font-mono)" font-size="11" font-weight="800" fill="#0a0a0a">404</text>
+						<circle cx="50" cy="3.5" r="0.9" fill="#ffffff" fill-opacity="0.7"></circle>
+					</svg>
+					<svg viewBox="0 0 100 100" class="error-arm pointer-events-none absolute inset-0 size-full">
+						<circle cx="94" cy="8" r="4" fill="#d4d4d4" stroke="#0a0a0a" stroke-width="0.6"></circle>
+						<path d="M94 8 L88 52 L76 64" fill="none" stroke="#d4d4d4" stroke-width="2" stroke-linecap="round"></path>
+						<rect x="71" y="61" width="8" height="5" rx="1" transform="rotate(-45 75 63.5)" fill="#0a0a0a"></rect>
+					</svg>
+				</div>
+
+				<CdjJog class="hidden aspect-square dark:block">
+					<span class="cdj-small">ERR · NO TRACK</span>
+					<span class="error-code">404</span>
+					<span class="cdj-small">SIDE ?</span>
+				</CdjJog>
+			</div>
+
+			<p class="mt-10 font-mono text-[11px] text-muted uppercase">Error 404</p>
+
+			<h1 class="mt-3 font-mono text-[clamp(1.9rem,8vw,4rem)] leading-[0.95] font-extrabold tracking-[-0.05em] uppercase font-stretch-[112.5%]">
+				<span data-lang="es">Pista no encontrada</span>
+				<span data-lang="en" lang="en" hidden>Track not found</span>
+			</h1>
+
+			<p class="mt-6 max-w-md text-muted">
+				<span data-lang="es">La aguja se ha salido del surco: esta página no existe.</span>
+				<span data-lang="en" lang="en" hidden>The needle skipped the groove: this page doesn't exist.</span>
+			</p>
+
+			<a href="/" data-lang="es" class="liquid-glass mt-10 inline-flex items-center gap-2 rounded-full px-5 py-3 font-mono text-xs uppercase">
+				<ArrowLeft size={14} aria-hidden="true" />
+				Volver al inicio
+			</a>
+			<a href="/en/" data-lang="en" lang="en" hidden class="liquid-glass mt-10 inline-flex items-center gap-2 rounded-full px-5 py-3 font-mono text-xs uppercase">
+				<ArrowLeft size={14} aria-hidden="true" />
+				Back home
+			</a>
+		</div>
+
+		<script is:inline>
+			// English when the unknown URL is under /en/, Spanish otherwise (also without JS)
+			if (/^\/en(\/|$)/.test(location.pathname)) {
+				document.documentElement.lang = 'en';
+				document.querySelectorAll('[data-lang]').forEach((el) => {
+					el.hidden = el.dataset.lang !== 'en';
+				});
+			}
+		</script>
+	</main>
+</Layout>

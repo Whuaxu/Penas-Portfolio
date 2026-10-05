@@ -169,6 +169,68 @@
   transform: none;
 }
 
+/* 404 page: skipping vinyl / stuttering CDJ. Kept here because Astro's dev
+   server doesn't load styles declared inside the 404 page itself */
+/* Animatable angle so the vinyl and the CDJ markers can share one keyframe */
+@property --deck-angle {
+  syntax: '<angle>';
+  inherits: true;
+  initial-value: 0deg;
+}
+
+.error-deck {
+  animation: error-stutter 2.4s cubic-bezier(0.6, 0, 0.4, 1) infinite;
+}
+
+.error-spin {
+  transform: rotate(var(--deck-angle));
+}
+
+.error-arm {
+  transform-origin: 94% 8%;
+  animation: error-skip 2.4s ease-in-out infinite;
+}
+
+.error-code {
+  font-family: var(--font-mono);
+  font-size: 13cqi;
+  font-weight: 800;
+  font-stretch: 112.5%;
+  line-height: 1;
+  color: var(--color-cue-a);
+  text-shadow: 0 0 10px rgb(255 59 48 / 0.6);
+}
+
+/* Spins forward, jumps back like a skipping record, carries on */
+@keyframes error-stutter {
+  0% {
+    --deck-angle: 0deg;
+  }
+  60% {
+    --deck-angle: 250deg;
+  }
+  66% {
+    --deck-angle: 238deg;
+  }
+  100% {
+    --deck-angle: 360deg;
+  }
+}
+
+@keyframes error-skip {
+  0%,
+  55%,
+  100% {
+    transform: rotate(0deg);
+  }
+  60% {
+    transform: rotate(9deg);
+  }
+  66% {
+    transform: rotate(4deg);
+  }
+}
+
 /* Skip link: hidden until focused with the keyboard */
 @layer components {
   .skip-link {
