@@ -1,0 +1,19 @@
+---
+import type { FluidOptions } from '../scripts/fluid';
+
+type Props = FluidOptions;
+
+// Options travel to the client script as JSON on the canvas
+const options = JSON.stringify(Astro.props);
+---
+
+<div class="pointer-events-none fixed top-0 left-0 z-0 size-full" aria-hidden="true">
+	<canvas id="fluid" class="block h-screen w-screen" data-options={options}></canvas>
+</div>
+
+<script>
+	import { initFluid } from '../scripts/fluid';
+
+	const canvas = document.getElementById('fluid') as HTMLCanvasElement | null;
+	if (canvas) initFluid(canvas, JSON.parse(canvas.dataset.options ?? '{}'));
+</script>

@@ -2,7 +2,7 @@
 import '@fontsource-variable/inter';
 import '@fontsource-variable/martian-mono/wdth.css';
 import '../styles/global.css';
-import SplashCursor from '../components/SplashCursor';
+import SplashCursor from '../components/SplashCursor.astro';
 import { toLang, useTranslations } from '../i18n/utils';
 
 interface Props {
@@ -53,7 +53,6 @@ const { title = t('meta.title'), description = t('meta.description') } = Astro.p
 		</svg>
 		<!-- Dark theme: club smoke (grey dye with turbulent, wispy physics) -->
 		<SplashCursor
-			client:only="react"
 			DENSITY_DISSIPATION={0.5}
 			VELOCITY_DISSIPATION={3}
 			DARK_STYLE="smoke"
