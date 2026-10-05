@@ -12,7 +12,7 @@ interface Props {
 const { id, index, title, kicker, centered = false } = Astro.props;
 ---
 
-<section id={id} class="mx-auto max-w-6xl scroll-mt-16 px-4 py-24" aria-labelledby={`${id}-title`}>
+<section id={id} class="mx-auto max-w-6xl scroll-mt-16 px-4 py-16 md:py-24" aria-labelledby={`${id}-title`}>
 	<header class="border-t border-fg pt-4">
 		<p class="flex justify-between font-mono text-[11px] text-muted uppercase">
 			<span>{String(index).padStart(2, '0')}</span>

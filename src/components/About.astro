@@ -8,7 +8,7 @@ const t = useTranslations(lang);
 ---
 
 <Section id="about" index={1} title={t('nav.about')} kicker={t('about.kicker')}>
-	<div class="grid gap-12 md:grid-cols-[1.2fr_1fr] md:gap-16">
+	<div class="grid gap-12 lg:grid-cols-[1.2fr_1fr] lg:gap-16">
 		<div class="space-y-5 text-lg leading-relaxed md:text-xl">
 			<p>{t('about.p1')}</p>
 			<p class="text-muted">{t('about.p2')}</p>
@@ -38,10 +38,10 @@ const t = useTranslations(lang);
 				<ol class="divide-y divide-line border-y border-line">
 					{
 						certifications.map(({ name, issuer }, i) => (
-							<li class="grid grid-cols-[auto_1fr_auto] gap-4 py-2.5">
+							<li class="grid grid-cols-[auto_1fr] gap-x-4 gap-y-0.5 py-2.5 sm:grid-cols-[auto_1fr_auto]">
 								<span class="text-muted">{String(i + 1).padStart(2, '0')}</span>
 								<span>{name}</span>
-								<span class="text-right text-muted">{issuer}</span>
+								<span class="col-start-2 text-muted sm:col-start-auto sm:text-right">{issuer}</span>
 							</li>
 						))
 					}
