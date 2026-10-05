@@ -24,7 +24,7 @@ const grooves = [46, 43, 40, 37, 34, 31, 28, 25];
 		<!-- Two-sided deck: flips over when the theme changes -->
 		<div class="deck-flip">
 			<!-- Light theme: turntable with a vinyl -->
-			<div class="deck-face">
+			<div class="deck-face deck-face-front">
 				<svg viewBox="0 0 100 100" class="deck-spin size-full">
 					<circle cx="50" cy="50" r="49" fill="#0a0a0a" />
 					{grooves.map((r) => <circle cx="50" cy="50" r={r} fill="none" stroke="#ffffff" stroke-opacity="0.08" stroke-width="0.4" />)}
@@ -49,7 +49,7 @@ const grooves = [46, 43, 40, 37, 34, 31, 28, 25];
 			<div class="deck-face deck-face-back">
 				<CdjJog class="size-full">
 					<span class="cdj-small">B1 · 128.0</span>
-					<Image src={djLogo} alt="" width={240} class="cdj-art" />
+					<Image src={djLogo} alt="" width={480} class="cdj-art" />
 					<span class="cdj-small">SIDE B</span>
 				</CdjJog>
 			</div>
@@ -140,35 +140,55 @@ const grooves = [46, 43, 40, 37, 34, 31, 28, 25];
 			inset 0 0 10px 0 color-mix(in srgb, var(--led) 35%, transparent);
 	}
 
-	/* Flip between the vinyl (front) and the CDJ (back) */
-	[data-deck-platter] {
+	/*
+	 * Flip between the vinyl (front, light) and the CDJ (back, dark).
+	 * At rest nothing is 3D-transformed: phones rasterize 3D layers at a reduced
+	 * scale, which made the deck look blurry. The 3D setup only exists while
+	 * [data-flipping] is set by the script during the theme change.
+	 */
+	[data-deck-platter][data-flipping] {
 		perspective: 1400px;
 	}
 
-	.deck-flip {
-		position: absolute;
-		inset: 0;
-		transform-style: preserve-3d;
-		transition: transform 800ms cubic-bezier(0.65, 0, 0.35, 1);
-	}
-
-	:global([data-theme='dark']) .deck-flip {
-		transform: rotateY(180deg);
-	}
-
+	.deck-flip,
 	.deck-face {
 		position: absolute;
 		inset: 0;
+	}
+
+	.deck-face-back,
+	:global([data-theme='dark']) .deck-face-front {
+		visibility: hidden;
+	}
+
+	:global([data-theme='dark']) .deck-face-back {
+		visibility: visible;
+	}
+
+	[data-flipping] .deck-flip {
+		transform-style: preserve-3d;
+		animation: deck-flip 800ms cubic-bezier(0.65, 0, 0.35, 1) both;
+	}
+
+	[data-flipping='to-light'] .deck-flip {
+		animation-direction: reverse;
+	}
+
+	[data-flipping] .deck-face {
+		visibility: visible;
 		backface-visibility: hidden;
 	}
 
-	.deck-face-back {
+	[data-flipping] .deck-face-back {
 		transform: rotateY(180deg);
 	}
 
-	@media (prefers-reduced-motion: reduce) {
-		.deck-flip {
-			transition: none;
+	@keyframes deck-flip {
+		from {
+			transform: rotateY(0deg);
+		}
+		to {
+			transform: rotateY(180deg);
 		}
 	}
 
@@ -204,6 +224,7 @@ const grooves = [46, 43, 40, 37, 34, 31, 28, 25];
 
 	document.querySelectorAll<HTMLElement>('[data-deck]').forEach((deck) => {
 		const platter = deck.querySelector<HTMLElement>('[data-deck-platter]')!;
+		const flipper = platter.querySelector<HTMLElement>('.deck-flip')!;
 		const cueBtn = deck.querySelector<HTMLButtonElement>('[data-deck-cue]')!;
 		const playBtn = deck.querySelector<HTMLButtonElement>('[data-deck-play]')!;
 
@@ -353,6 +374,19 @@ const grooves = [46, 43, 40, 37, 34, 31, 28, 25];
 				frame = requestAnimationFrame(tick);
 			}
 		}).observe(deck);
+
+		// Animate the flip only when the theme changes; the faces are flat at rest
+		let currentTheme = document.documentElement.dataset.theme;
+		new MutationObserver(() => {
+			const theme = document.documentElement.dataset.theme;
+			if (theme === currentTheme) return;
+			currentTheme = theme;
+			if (reduceMotion) return;
+			platter.dataset.flipping = theme === 'dark' ? 'to-dark' : 'to-light';
+		}).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+		flipper.addEventListener('animationend', (event) => {
+			if (event.target === flipper) delete platter.dataset.flipping;
+		});
 
 		render();
 	});
