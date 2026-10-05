@@ -15,5 +15,10 @@ const options = JSON.stringify(Astro.props);
 	import { initFluid } from '../scripts/fluid';
 
 	const canvas = document.getElementById('fluid') as HTMLCanvasElement | null;
-	if (canvas) initFluid(canvas, JSON.parse(canvas.dataset.options ?? '{}'));
+
+	// Start the fluid once the browser is idle, so compiling its shaders
+	// doesn't compete with the first paint (it only shows after the pointer moves)
+	const start = () => canvas && initFluid(canvas, JSON.parse(canvas.dataset.options ?? '{}'));
+	if ('requestIdleCallback' in window) requestIdleCallback(start, { timeout: 1500 });
+	else setTimeout(start, 200);
 </script>

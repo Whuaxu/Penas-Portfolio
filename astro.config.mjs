@@ -8,6 +8,11 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig({
   site: 'https://javipena.vercel.app',
 
+  // The CSS is small: inlining it saves render-blocking requests on first load
+  build: {
+    inlineStylesheets: 'always'
+  },
+
   integrations: [
     sitemap({
       i18n: {
