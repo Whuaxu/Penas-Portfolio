@@ -14,6 +14,9 @@ const lang = toLang(Astro.currentLocale);
 const t = useTranslations(lang);
 
 const { title = t('meta.title'), description = t('meta.description') } = Astro.props;
+
+// Set by Vercel during its builds
+const onVercel = process.env.VERCEL === '1';
 ---
 
 <!doctype html>
@@ -41,6 +44,17 @@ const { title = t('meta.title'), description = t('meta.description') } = Astro.p
 		<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
+		<!-- Vercel Web Analytics (cookieless; the script only exists on Vercel deployments) -->
+		{
+			onVercel && (
+				<>
+					<script is:inline>
+						window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+					</script>
+					<script is:inline defer src="/_vercel/insights/script.js"></script>
+				</>
+			)
+		}
 	</head>
 	<body class="min-h-dvh overflow-x-hidden">
 		<a href="#content" class="skip-link liquid-glass liquid-glass-strong">{t('a11y.skip')}</a>
