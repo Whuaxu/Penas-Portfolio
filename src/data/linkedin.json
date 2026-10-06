@@ -1,0 +1,193 @@
+{
+  "positions": [
+    {
+      "company": "Auria Technologies",
+      "title": "Advisor",
+      "location": "Orense",
+      "start": "2026-09"
+    },
+    {
+      "company": "ALIA Technologies",
+      "title": "Junior Software Developer",
+      "location": "Orense",
+      "start": "2026-07"
+    },
+    {
+      "company": "Profesional independiente",
+      "title": "DJ",
+      "start": "2023-07"
+    },
+    {
+      "company": "Auria Technologies",
+      "title": "Ingeniero de desarrollo",
+      "location": "Orense",
+      "start": "2025-09",
+      "end": "2026-09"
+    },
+    {
+      "company": "ALIA Technologies",
+      "title": "Junior Full Stack Developer",
+      "location": "Orense",
+      "start": "2025-11",
+      "end": "2026-07"
+    }
+  ],
+  "certifications": [
+    {
+      "name": "Introduction to Cybersecurity",
+      "authority": "Cisco",
+      "url": "https://www.credly.com/badges/1f529788-a2e2-4782-8e76-48bfcb8327a8/linked_in_profile",
+      "date": "2025-08"
+    },
+    {
+      "name": "Ultimate Docker: guia de cero hasta despliegues",
+      "authority": "Udemy",
+      "date": "2025-11"
+    },
+    {
+      "name": "Taller FinisTerrae III",
+      "authority": "CESGA",
+      "date": "2025-11"
+    },
+    {
+      "name": "Taller Avanzado Finisterrae III",
+      "authority": "CESGA",
+      "date": "2025-11"
+    },
+    {
+      "name": "Docker, de principiante a experto",
+      "authority": "Udemy",
+      "date": "2026-01"
+    },
+    {
+      "name": "LoopBack 4: Modern ways to Build APIs in TypeScript & Node.js",
+      "authority": "Udemy",
+      "date": "2025-12"
+    },
+    {
+      "name": "Build Web Apps with Nuxt.js 3",
+      "authority": "Udemy",
+      "date": "2026-01"
+    },
+    {
+      "name": "Certificado de Desarrollo con IA",
+      "authority": "BIG school",
+      "date": "2026-03"
+    },
+    {
+      "name": "Certificado Santander Google/ Inteligencia Artificial y productividad",
+      "authority": "Santander"
+    },
+    {
+      "name": "Curso de Odoo 13 - 18 Funcional para Implementadores",
+      "authority": "Udemy",
+      "date": "2026-06"
+    },
+    {
+      "name": "Odoo Conceptos avanzados de Modelos para programadores",
+      "authority": "Udemy",
+      "date": "2026-06"
+    },
+    {
+      "name": "Odoo Conceptos avanzados de Vistas para programadores",
+      "authority": "Udemy",
+      "date": "2026-06"
+    },
+    {
+      "name": "Odoo Curso de desarrollo completo para programadores",
+      "authority": "Udemy",
+      "date": "2026-06"
+    }
+  ],
+  "skills": [
+    "iTunes",
+    "Figma",
+    "Prompt Engineer",
+    "Automatización",
+    "UIX",
+    "PrestaShop",
+    "Integración continua y entrega continua (CI/CD)",
+    "API de Swagger",
+    "Odoo",
+    "Odoo API",
+    "API RESTT",
+    "Autoskills",
+    "OpenSpec",
+    "DBeaver",
+    "NATS",
+    "Arduino IDE",
+    "Arduino",
+    "Desarrollo web",
+    "Claude Skills",
+    "Spec-driven development",
+    "Anthropic Claude",
+    "SpekKit",
+    "Vue.js",
+    "Redis",
+    "Nuxt.js",
+    "Angular",
+    "LoopBack 4",
+    "Desarrollo web back end",
+    "API de Postman",
+    "Transferencia de Estado Representacional (REST)",
+    "Docker Compose",
+    "SonarQube",
+    "TypeScript",
+    "Linux Mint",
+    "FinisTerrae III",
+    "MongoDB Compass",
+    "MongoDB",
+    "Machine Learning",
+    "IA",
+    "DigitalOcean",
+    "Despliegue de sistemas",
+    "PuTTY",
+    "Docker Portainer",
+    "Docker",
+    "GitLab",
+    "GitFlow",
+    "CarMaker",
+    "JSON",
+    "Bootstrap",
+    "Tailwind CSS",
+    "Bash",
+    "Seguridad de redes",
+    "SQL",
+    "Metodologías ágiles",
+    "Python",
+    "Git",
+    "Ubuntu",
+    "Telecomunicaciones",
+    "GitHub",
+    "C++",
+    "Procesamiento digital de imágenes",
+    "Mobile Systems",
+    "Rekordbox",
+    "Packet Tracer",
+    "Wireshark",
+    "Interconexión de redes IP",
+    "Oratoria",
+    "Gestión de proyectos",
+    "Relaciones públicas",
+    "Mezcla de música (DJ)",
+    "Estrategia de marketing",
+    "Oracle SQL Developer",
+    "React Expo",
+    "Aplicaciones móviles",
+    "Redux.js",
+    "Node.js",
+    "PhpMyAdmin",
+    "PHP",
+    "MySQL",
+    "React Native",
+    "HTML",
+    "Css",
+    "JavaScript",
+    "Apache",
+    "Java",
+    "Inglés",
+    "Programación",
+    "Programación en C",
+    "Sistemas operativos"
+  ]
+}
