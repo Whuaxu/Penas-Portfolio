@@ -69,11 +69,23 @@ public/             # favicons and Open Graph images
 
 Most updates only touch a data file, no component changes needed:
 
+Jobs, certifications and skills are synced from LinkedIn. Export your data from LinkedIn
+(*Settings → Data privacy → Get a copy of your data*) and run:
+
+```bash
+pnpm sync:linkedin ~/Downloads/Complete_LinkedInDataExport_XX.zip
+```
+
+It only reads `Positions.csv`, `Certifications.csv` and `Skills.csv`, updates `src/data/linkedin.json`
+and lists anything new that still needs a place in `src/data/linkedin-editorial.ts`
+(order, translations, skill groups, technologies per company).
+
 | To change | Edit |
 | --- | --- |
-| A job or role (add `end: 'YYYY-MM'` when it finishes) | `src/data/experience.ts` |
+| Roles, dates, certifications, skills | LinkedIn, then `pnpm sync:linkedin` |
+| How they are shown (order, names, groups, stack per company) | `src/data/linkedin-editorial.ts` |
 | Projects (cover image goes in `src/assets/projects/`) | `src/data/projects.ts` |
-| Education, certifications, skills | `src/data/about.ts` |
+| Education | `src/data/about.ts` |
 | DJ genres, gear, venues and show photos | `src/data/dj.ts` |
 | Name, location and social links | `src/data/profile.ts` |
 | Any interface text, in both languages | `src/i18n/ui.ts` |
