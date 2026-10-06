@@ -1,4 +1,6 @@
 import type { Lang } from '../i18n/ui';
+import linkedin from './linkedin.json';
+import { certifications as certificationEditorial, key, skillGroups as skillGroupEditorial } from './linkedin-editorial';
 
 type Localized = Record<Lang, string>;
 
@@ -15,59 +17,24 @@ export const education: { title: Localized; school: string; period: string }[] =
   },
 ];
 
-// Titles kept as issued
-export const certifications: { name: string; issuer: string }[] = [
-  { name: 'Introduction to Cybersecurity', issuer: 'Cisco' },
-  { name: 'Odoo: Curso de desarrollo completo para programadores', issuer: 'Udemy' },
-  { name: 'Odoo: Conceptos avanzados de Vistas para programadores', issuer: 'Udemy' },
-  { name: 'Odoo: Conceptos avanzados de Modelos para programadores', issuer: 'Udemy' },
-  { name: 'Curso de Odoo 13 - 18 Funcional para Implementadores', issuer: 'Udemy' },
-  { name: 'Certificado de Desarrollo con IA', issuer: 'BIG school' },
-  { name: 'Inteligencia Artificial y productividad', issuer: 'Santander · Google' },
-  { name: 'Build Web Apps with Nuxt.js 3', issuer: 'Udemy' },
-  { name: 'LoopBack 4: Modern ways to Build APIs in TypeScript & Node.js', issuer: 'Udemy' },
-  { name: 'Docker, de principiante a experto', issuer: 'Udemy' },
-  { name: 'Ultimate Docker: guía de cero hasta despliegues', issuer: 'Udemy' },
-  { name: 'Taller Avanzado FinisTerrae III', issuer: 'CESGA' },
-  { name: 'Taller FinisTerrae III', issuer: 'CESGA' },
-];
+// Certifications and skills come from LinkedIn (pnpm sync:linkedin); order, clean
+// names and grouping from linkedin-editorial.ts
+const editorialCert = (name: string) => certificationEditorial.findIndex((c) => key(c.linkedin) === key(name));
 
-export const skillGroups: { title: Localized; items: (string | Localized)[] }[] = [
-  {
-    title: { es: 'Frontend y diseño', en: 'Frontend & design' },
-    items: ['TypeScript', 'JavaScript', 'Angular', 'Vue.js', 'Nuxt.js', 'React Native', 'Expo', 'Redux', 'Tailwind CSS', 'Bootstrap', 'HTML', 'CSS', 'Figma', 'UI / UX'],
-  },
-  {
-    title: { es: 'Backend y APIs', en: 'Backend & APIs' },
-    items: ['Node.js', 'LoopBack 4', 'REST', 'Swagger', 'Postman', 'NATS', 'Redis', 'Python', 'Java', 'PHP', 'C++', 'C'],
-  },
-  {
-    title: { es: 'Datos', en: 'Data' },
-    items: ['SQL', 'MySQL', 'MongoDB', 'Oracle SQL Developer', 'DBeaver', 'phpMyAdmin'],
-  },
-  {
-    title: { es: 'ERP y e-commerce', en: 'ERP & e-commerce' },
-    items: ['Odoo', 'Odoo API', 'PrestaShop'],
-  },
-  {
-    title: { es: 'DevOps', en: 'DevOps' },
-    items: ['Docker', 'Docker Compose', 'Portainer', 'CI/CD', 'Git', 'GitFlow', 'GitHub', 'GitLab', 'SonarQube', 'DigitalOcean', 'Apache', 'Bash', 'Linux'],
-  },
-  {
-    title: { es: 'IA', en: 'AI' },
-    items: ['Anthropic Claude', 'Claude Skills', 'Prompt Engineering', 'Spec-driven development', 'SpecKit', 'OpenSpec', 'Machine Learning'],
-  },
-  {
-    title: { es: 'Sistemas y redes', en: 'Systems & networks' },
-    items: ['FinisTerrae III', 'Arduino', 'CarMaker', 'Wireshark', 'Packet Tracer', { es: 'Seguridad de redes', en: 'Network security' }, { es: 'Redes IP', en: 'IP networking' }],
-  },
-  {
-    title: { es: 'Soft skills', en: 'Soft skills' },
-    items: [
-      { es: 'Metodologías ágiles', en: 'Agile' },
-      { es: 'Gestión de proyectos', en: 'Project management' },
-      { es: 'Oratoria', en: 'Public speaking' },
-      { es: 'Inglés', en: 'English' },
-    ],
-  },
-];
+export const certifications: { name: string; issuer: string }[] = linkedin.certifications
+  .map((cert, i) => ({ cert, i, at: editorialCert(cert.name) }))
+  .sort((a, b) => (a.at === -1 ? Infinity : a.at) - (b.at === -1 ? Infinity : b.at) || a.i - b.i)
+  .map(({ cert, at }) =>
+    at === -1
+      ? { name: cert.name, issuer: cert.authority }
+      : { name: certificationEditorial[at].name, issuer: certificationEditorial[at].issuer },
+  );
+
+const skillsOnLinkedIn = new Set(linkedin.skills.map(key));
+
+export const skillGroups: { title: Localized; items: (string | Localized)[] }[] = skillGroupEditorial
+  .map(({ title, items }) => ({
+    title,
+    items: items.filter((item) => item.from.some((name) => skillsOnLinkedIn.has(key(name)))).map((item) => item.label),
+  }))
+  .filter((group) => group.items.length > 0);

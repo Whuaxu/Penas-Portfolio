@@ -1,4 +1,6 @@
 import type { Lang } from '../i18n/ui';
+import linkedin from './linkedin.json';
+import { companies, key } from './linkedin-editorial';
 
 type Localized = Record<Lang, string>;
 
@@ -14,54 +16,40 @@ export interface Track {
   company: string;
   location?: string;
   roles: Role[];
-  /** Skills LinkedIn links to this experience */
+  /** Technologies used at this company (editorial, not on LinkedIn) */
   stack: (string | Localized)[];
 }
 
-// Newest first; side/number labels (A1, A2, B1…) are derived from the order
-export const tracks: Track[] = [
-  {
-    company: 'ALIA Technologies',
-    location: 'Ourense',
-    roles: [
-      { title: { es: 'Junior Software Developer', en: 'Junior Software Developer' }, start: '2026-07' },
-      { title: { es: 'Junior Full Stack Developer', en: 'Junior Full Stack Developer' }, start: '2025-11', end: '2026-07' },
-    ],
-    stack: [
-      'TypeScript',
-      'LoopBack 4',
-      'Angular',
-      'Vue.js',
-      'Nuxt.js',
-      'Odoo',
-      'PrestaShop',
-      'MongoDB',
-      'MySQL',
-      'Redis',
-      'Docker',
-      'GitLab',
-      'CI/CD',
-      'SonarQube',
-      'Anthropic Claude',
-      'Spec-driven development',
-    ],
-  },
-  {
-    company: 'Auria Technologies',
-    location: 'Ourense',
-    roles: [
-      { title: { es: 'Advisor', en: 'Advisor' }, start: '2026-09' },
-      { title: { es: 'Ingeniero de desarrollo', en: 'Development engineer' }, start: '2025-09', end: '2026-09' },
-    ],
-    stack: ['Python', 'C++', 'NATS', 'Arduino', 'CarMaker', 'Git'],
-  },
-  {
-    company: 'DJ',
-    roles: [{ title: { es: 'Profesional independiente', en: 'Freelance' }, start: '2023-07' }],
-    stack: [
-      'Rekordbox',
-      'iTunes',
-      { es: 'Mezcla de música', en: 'Music mixing' },
-    ],
-  },
-];
+// Roles and dates come from LinkedIn (pnpm sync:linkedin); names, translations,
+// locations and stacks from linkedin-editorial.ts
+const editorialIndex = (company: string) => companies.findIndex((c) => key(c.linkedin) === key(company));
+const newestFirst = (a: { start: string }, b: { start: string }) => b.start.localeCompare(a.start);
+
+const byCompany = new Map<string, typeof linkedin.positions>();
+for (const position of linkedin.positions) {
+  const group = byCompany.get(key(position.company)) ?? [];
+  group.push(position);
+  byCompany.set(key(position.company), group);
+}
+
+// Side/number labels (A1, A2, B1…) follow this order: editorial first, new companies after, newest first
+export const tracks: Track[] = [...byCompany.values()]
+  .map((positions) => {
+    const editorial = companies[editorialIndex(positions[0].company)];
+    return {
+      order: editorial ? editorialIndex(positions[0].company) : Number.POSITIVE_INFINITY,
+      start: [...positions].sort(newestFirst)[0].start,
+      track: {
+        company: editorial?.display ?? positions[0].company,
+        location: editorial ? editorial.location : positions[0].location,
+        roles: [...positions].sort(newestFirst).map((p) => ({
+          title: editorial?.titles[p.title] ?? { es: p.title, en: p.title },
+          start: p.start,
+          end: p.end,
+        })),
+        stack: editorial?.stack ?? [],
+      },
+    };
+  })
+  .sort((a, b) => a.order - b.order || b.start.localeCompare(a.start))
+  .map(({ track }) => track);
